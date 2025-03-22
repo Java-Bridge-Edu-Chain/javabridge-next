@@ -1,12 +1,14 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss"
+
+const config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./*.{js,ts,jsx,tsx,mdx}"
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
@@ -32,7 +34,7 @@ module.exports = {
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--foreground))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -50,6 +52,20 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Add JavaBridge brown theme colors
+        java: {
+          50: "#fff8eb",
+          100: "#fcebc8",
+          200: "#f8d799",
+          300: "#f3bd62",
+          400: "#eda339",
+          500: "#e58a1d",
+          600: "#d16e14",
+          700: "#a24f12",
+          800: "#844116",
+          900: "#6e3716",
+          950: "#3f1d0c",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -58,22 +74,33 @@ module.exports = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
+        "steam": {
+          "0%": { transform: "translateY(0) scale(1)", opacity: "0" },
+          "50%": { transform: "translateY(-10px) scale(1.2)", opacity: "0.5" },
+          "100%": { transform: "translateY(-20px) scale(0.8)", opacity: "0" }
+        },
+        "pulse-gentle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.8" }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "steam": "steam 2s ease-out infinite",
+        "pulse-gentle": "pulse-gentle 3s ease-in-out infinite"
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/postcss"),
-  ],
-}
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config
+
+export default config
 

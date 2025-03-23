@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { getVercelAITools } from "@coinbase/agentkit-vercel-ai-sdk";
 import { prepareAgentkitAndWalletProvider } from "./prepare-agentkit";
+import { getLangChainTools } from "@coinbase/agentkit-langchain";
 
 /**
  * Agent Configuration Guide
@@ -68,9 +69,12 @@ export async function createAgent(): Promise<Agent> {
         - Identity: Preserve the identity exactly as provided. Do not change or substitute names, roles, or descriptive phrases.
         `;
     const tools = getVercelAITools(agentkit);
+    const langchaintools = await getLangChainTools(agentkit);
 
+    console.log(`Tools: ${JSON.stringify(tools)}`);
+        
     agent = {
-      tools,
+      tools: {...tools},
       system,
       model,
       maxSteps: 10,

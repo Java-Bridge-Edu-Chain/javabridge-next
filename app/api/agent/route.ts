@@ -40,16 +40,16 @@ export async function POST(
       messages,
     });
 
-    // let rewrittenText = await rewriteAgent(text);
+    let rewrittenText = await rewriteAgent(text);
     // console.log(`do this`);
-    // console.log("Agent response:", text);
-    // console.log("Rewritten agent response:", rewrittenText);
+    console.log("Agent response:", text);
+    console.log("Rewritten agent response:", rewrittenText);
 
     // 4. Add the agent's response to the messages
     messages.push({ id: generateId(), role: "assistant", content: text });
 
     // 5️. Return the final response
-    return NextResponse.json({ response: text });
+    return NextResponse.json({ response: rewrittenText });
   } catch (error) {
     console.error("Error processing request:", error);
     return NextResponse.json({ error: "Failed to process message" });

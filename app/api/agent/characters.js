@@ -95,8 +95,7 @@ export const rewriteAgent = async (input) => {
         temperature: 0.3,
     });
     return responses.output_text;
-
 };
 
-// Export the rewriteAgent function
-export default { rewriteAgent };
+const characterAgent = { rewriteAgent };
+export default characterAgent;

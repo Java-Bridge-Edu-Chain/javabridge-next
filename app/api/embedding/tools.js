@@ -1,14 +1,14 @@
 import fs from 'fs/promises';
 import path from 'path';
 import pdfParse from 'pdf-parse';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 
 // Get current file directory when using ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 // Update paths to use embedding_docs folders
-const inputDir = path.join(process.cwd(), "embedding_docs", "input");
+// const inputDir = path.join(process.cwd(), "embedding_docs", "input");
 const outputDir = path.join(process.cwd(), "embedding_docs", "output");
 
 // Chunk settings
@@ -20,6 +20,7 @@ export async function ensureDir(dir) {
   try {
     await fs.access(dir);
   } catch (error) {
+    console.log(error)
     await fs.mkdir(dir, { recursive: true });
   }
 }

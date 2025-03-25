@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { extractPDF } from '../tools';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
-const ENV = dotenv.config().parsed;
-const openai = new OpenAI({ apiKey: ENV.OPENAI_API_KEY });
+// const ENV = dotenv.config().parsed;
+// const openai = new OpenAI({ apiKey: ENV.OPENAI_API_KEY });
 
 const inputDir = path.join(process.cwd(), 'embedding_docs/input');
 // const outputDir = path.join(process.cwd(), 'embedding_docs/output');

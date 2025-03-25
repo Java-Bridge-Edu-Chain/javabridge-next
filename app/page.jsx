@@ -3,12 +3,21 @@
 import { useState, useEffect, useRef } from "react";
 import { useAgent } from "../hooks/useAgent";
 import ReactMarkdown from "react-markdown";
-import { Coffee, Send, Sparkles, Bean, BookCopy, Droplets, Gauge } from "lucide-react";
+import {
+  Coffee,
+  Send,
+  Sparkles,
+  Bean,
+  BookCopy,
+  Droplets,
+  Gauge,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Bridge from "./components/Bridge";
 
 /**
  * Home page for the JavaBridge interface with Digital Luwak chat
@@ -16,35 +25,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
  * @returns {React.ReactNode} The home page
  */
 export default function Home() {
-  const [input, setInput] = useState("");
-  const { messages, sendMessage, isThinking } = useAgent();
-
   // Ref for the messages container
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Function to scroll to the bottom
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      const viewport = messagesEndRef.current.closest('[data-radix-scroll-area-viewport]');
-      if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
-      } else {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
-  // Auto-scroll whenever messages change
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const onSendMessage = async () => {
-    if (!input.trim() || isThinking) return;
-    const message = input;
-    setInput("");
-    await sendMessage(message);
-  };
+  // const messagesEndRef = useRef < HTMLDivElement > null;
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
@@ -53,13 +35,15 @@ export default function Home() {
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-3 p-1.5 px-3 rounded-full bg-java-500 border border-java-700/30 text-java-200 mb-4 shadow-inner">
             <Sparkles className="w-4 h-4" color="white" />
-            <span className="text-xs font-medium text-white">Bridging assets between chains elegantly</span>
+            <span className="text-xs font-medium text-white">
+              Bridging assets between chains elegantly
+            </span>
           </div>
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-java-400 via-java-600 to-java-800 mb-3">
             <span className="animate-gradient">JavaBridge</span>
           </h1>
           <p className="text-java-600 max-w-xl mx-auto">
-            A powerful Ethereum Roll Up for seamless cross-chain asset bridging 
+            A powerful Ethereum Roll Up for seamless cross-chain asset bridging
           </p>
         </div>
 
@@ -84,10 +68,7 @@ export default function Home() {
         </div> */}
 
         {/* Main chat container with coffee-inspired design */}
-        <Card className="border-java-700/30 bg-java-500 backdrop-blur-md overflow-hidden shadow-[0_0_15px_rgba(200,140,50,0.15)]">
-        </Card>
-
-        
+        <Bridge />
       </div>
     </div>
   );
@@ -108,7 +89,7 @@ const styles = `
 `;
 
 // Inject the styles
-if (typeof document !== 'undefined') {
+if (typeof document !== "undefined") {
   const styleSheet = document.createElement("style");
   styleSheet.innerText = styles;
   document.head.appendChild(styleSheet);

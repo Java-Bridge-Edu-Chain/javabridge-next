@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+// import OpenAI from "openai";
 
 
 export const create = () => {
@@ -6,7 +6,7 @@ export const create = () => {
 
     const inputDir = path.join(process.cwd(), "embedding_docs", "input");
     const files = fs.readdirSync(inputDir);
-    const fileContents = files.map((filename) => {
+    files.map((filename) => {
         const filePath = path.join(inputDir, filename);
         try {
             const content = fs.readFileSync(filePath, "utf8");

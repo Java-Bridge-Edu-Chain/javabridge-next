@@ -5,7 +5,7 @@ import path from 'path';
 export async function GET() {
   try {
     const inputDir = path.join(process.cwd(), 'embedding_docs/input');
-    
+
     // Check if directory exists
     if (!fs.existsSync(inputDir)) {
       return NextResponse.json(
@@ -13,10 +13,10 @@ export async function GET() {
         { status: 404 }
       );
     }
-    
+
     // Read all files in the directory
     const files = fs.readdirSync(inputDir);
-    
+
     // Read content of each file
     const fileContents = files.map(filename => {
       const filePath = path.join(inputDir, filename);
@@ -35,7 +35,7 @@ export async function GET() {
         };
       }
     });
-    
+
     return NextResponse.json({
       files: fileContents,
       count: files.length,

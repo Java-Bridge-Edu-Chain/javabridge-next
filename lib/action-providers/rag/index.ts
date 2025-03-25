@@ -46,11 +46,13 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
 
     @CreateAction({
         name: "rag-search",
-        description: "Search for relevant documents based on a query. if user ask for crypto project or solana chain, execute this function first.",
+        description: "Search for relevant documents based on a query. if user ask for crypto project like espresso, arbitrum, execute this function first.",
         schema: RagSearchSchema,
     })
     async search(args: z.infer<typeof RagSearchSchema>): Promise<SearchResponse> {
         const { query, total } = args;
+
+        console.log(`RAG search query: ${query}`);
         
         try {
             // Load the knowledge base

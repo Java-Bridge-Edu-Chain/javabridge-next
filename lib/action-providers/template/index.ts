@@ -1,4 +1,4 @@
-import { ActionProvider, WalletProvider, Network, CreateAction } from "@coinbase/agentkit";
+import { ActionProvider, WalletProvider, CreateAction } from "@coinbase/agentkit";
 import { z } from "zod";
 
 
@@ -20,7 +20,7 @@ class MyActionProvider extends ActionProvider<WalletProvider> {
         return args.myField;
     }
 
-    supportsNetwork = (network: Network) => true;
+    supportsNetwork = () => true;
 }
 
 export const myActionProvider = () => new MyActionProvider();

@@ -3,13 +3,13 @@ import {
   ActionProvider,
   AgentKit,
   cdpApiActionProvider,
-  erc20ActionProvider,
   NETWORK_ID_TO_VIEM_CHAIN,
   pythActionProvider,
   ViemWalletProvider,
-  walletActionProvider,
   WalletProvider,
-  wethActionProvider,
+  // walletActionProvider,
+  // erc20ActionProvider,
+  // wethActionProvider,
 } from "@coinbase/agentkit";
 import fs from "fs";
 import { createWalletClient, Hex, http } from "viem";
@@ -91,10 +91,10 @@ export async function prepareAgentkitAndWalletProvider(): Promise<{
 
     // Initialize AgentKit: https://docs.cdp.coinbase.com/agentkit/docs/agent-actions
     const actionProviders: ActionProvider[] = [
-      wethActionProvider(),
+      // wethActionProvider(),
       pythActionProvider(),
-      walletActionProvider(),
-      erc20ActionProvider(),
+      // walletActionProvider(),
+      // erc20ActionProvider(),
       mathActionProvider(),
     ];
     const canUseCdpApi = process.env.CDP_API_KEY_NAME && process.env.CDP_API_KEY_PRIVATE_KEY;

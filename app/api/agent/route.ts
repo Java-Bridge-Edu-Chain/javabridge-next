@@ -40,7 +40,7 @@ export async function POST(
       messages,
     });
 
-    let rewrittenText = await rewriteAgent(text);
+    const rewrittenText = await rewriteAgent(text);
     // console.log(`do this`);
     console.log("Agent response:", text);
     console.log("Rewritten agent response:", rewrittenText);

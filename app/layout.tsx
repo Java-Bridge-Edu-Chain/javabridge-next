@@ -2,8 +2,8 @@
 
 import "./globals.css";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Coffee, CoffeeIcon } from "lucide-react";
+// import { cn } from "@/lib/utils";
+import { Coffee } from "lucide-react";
 
 /**
  * Root layout for the page
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body 
-        className="bg-amber-950 text-amber-50 flex flex-col min-h-screen antialiased"
+        className="bg-primary text-amber-50 flex flex-col min-h-screen antialiased"
         style={{
           backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zm20.97 0l9.315 9.314-1.414 1.414L34.828 0h2.83zM22.344 0L13.03 9.314l1.414 1.414L25.172 0h-2.83zM32 0l12.142 12.142-1.414 1.414L30 2.828 17.272 15.556l-1.414-1.414L28 2.142 17.414 13.556l-1.414-1.414L28 0h4zM2.828 17.142l1.414 1.414 16.97-16.97L22.626 0h-2.83L2.828 16.97V17.143zM54.627 60l.83-.828-1.415-1.415L51.8 60h2.827zM5.373 60l-.83-.828L5.96 57.757 8.2 60H5.374zM48.97 60l3.657-3.657-1.414-1.414L46.143 60h2.828zM11.03 60L7.372 56.343 8.787 54.93 13.857 60H11.03zm32.284 0L49.8 53.515l-1.415-1.414-7.9 7.9h2.83zM16.686 60L10.2 53.515l1.415-1.414 7.9 7.9h-2.83zm20.97 0l9.315-9.314-1.414-1.414L34.828 60h2.83zM22.344 60l-9.314-9.314 1.414-1.414L25.172 60h-2.83zM32 60l12.142-12.142-1.414-1.414L30 57.172 17.272 44.444l-1.414 1.414L28 57.858 17.414 46.444l-1.414 1.414L28 60h4zM2.828 42.858l1.414-1.414 16.97 16.97L22.626 60h-2.83L2.828 43.03v-.17z' fill='rgba(255,215,128,0.03)' fill-rule='evenodd'/%3E%3C/svg%3E\")"
         }}

@@ -54,11 +54,25 @@ export async function GET() {
       });
     });
 
+
+    let tempData = [];
+    let index = 1;
+    fileContents.forEach((file) => {
+      file.content.chunks.forEach((chunk) => {
+        tempData.push({
+          id: index++,
+          content: chunk,
+        });
+      });
+    });
+
+    // save data to json file
+    const outputFilePath = path.join(process.cwd(), 'embedding_docs/output', 'all.json');
+    fs.writeFileSync(outputFilePath, JSON.stringify(tempData, null, 2), 'utf-8');
+    console.log(`Data saved to ${outputFilePath}`);
+
     return NextResponse.json({
-      data: fileContents,
-      chunk_count: data.length,
-      file_count: files.length,
-      directory: inputDir
+      data: tempData,
     });
 
   } catch (error) {

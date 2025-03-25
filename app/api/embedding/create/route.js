@@ -7,6 +7,7 @@ import { extractPDF } from '../tools';
 // const ENV = dotenv.config().parsed;
 // const openai = new OpenAI({ apiKey: ENV.OPENAI_API_KEY });
 
+const CHUNK = false; // Toggle for chunking functionality
 const inputDir = path.join(process.cwd(), 'embedding_docs/input');
 // const outputDir = path.join(process.cwd(), 'embedding_docs/output');
 
@@ -28,7 +29,7 @@ export async function GET() {
     const fileContentPromises = files.map(async (filename) => {
       const filePath = path.join(inputDir, filename);
       try {
-        const content = await extractPDF(filePath);
+        const content = await extractPDF(filePath, CHUNK);
         console.log(`Extracted content from ${filename}`);
         return {
           filename,
@@ -48,23 +49,36 @@ export async function GET() {
 
     let data = [];
 
+    console.log(fileContents);
     Array.from(fileContents).forEach(async (file) => {
       file.content.chunks.forEach(async (chunk) => {
         data.push(chunk);
       });
     });
 
-
     let tempData = [];
     let index = 1;
-    fileContents.forEach((file) => {
-      file.content.chunks.forEach((chunk) => {
-        tempData.push({
-          id: index++,
-          content: chunk,
+    
+    if (CHUNK) {
+      // Process with chunking (original behavior)
+      fileContents.forEach((file) => {
+        file.content.chunks.forEach((chunk) => {
+          tempData.push({
+            id: index++,
+            content: chunk,
+          });
         });
       });
-    });
+    } else {
+      // Process without chunking - save whole documents
+      fileContents.forEach((file) => {
+        tempData.push({
+          id: index++,
+          content: file.content.text, // Using the full document text instead of chunks
+          filename: file.filename
+        });
+      });
+    }
 
     // save data to json file
     const outputFilePath = path.join(process.cwd(), 'embedding_docs/output', 'all.json');

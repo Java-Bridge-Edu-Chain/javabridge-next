@@ -43,7 +43,7 @@ export function createChunks(text) {
 }
 
 // Extract PDF text and create chunks
-export async function extractPDF(pdfPath) {
+export async function extractPDF(pdfPath, chunk = true) {
   try {
     const pdfFile = await fs.readFile(pdfPath);
     const data = await pdfParse(pdfFile);
@@ -54,17 +54,22 @@ export async function extractPDF(pdfPath) {
     const textOutputPath = path.join(outputDir, `${fileName}.txt`);
     await fs.writeFile(textOutputPath, text);
 
-    // Create and save chunks
-    const chunks = createChunks(text);
-    const jsonOutputPath = path.join(outputDir, `${fileName}.json`);
-    await fs.writeFile(jsonOutputPath, JSON.stringify({ chunks }, null, 2));
+    // Create chunks only if chunking is requested
+    let chunks = [];
+    if (chunk) {
+      chunks = createChunks(text);
+      const jsonOutputPath = path.join(outputDir, `${fileName}.json`);
+      await fs.writeFile(jsonOutputPath, JSON.stringify({ chunks }, null, 2));
+      console.log(`Created ${chunks.length} chunks for ${fileName}.pdf`);
+    } else {
+      console.log(`Skipped chunking for ${fileName}.pdf as requested`);
+    }
 
-    console.log(`Created ${chunks.length} chunks for ${fileName}.pdf`);
     console.log(
-      `✅ Successfully processed: ${fileName}.pdf → ${fileName}.txt and ${fileName}.json`
+      `✅ Successfully processed: ${fileName}.pdf → ${fileName}.txt${chunk ? ` and ${fileName}.json` : ''}`
     );
 
-    return { fileName, chunks };
+    return { fileName, text, chunks };
   } catch (error) {
     console.error(
       `❌ Error processing ${path.basename(pdfPath)}: ${error.message}`

@@ -16,7 +16,7 @@ const SelectChain = ({
   }, [defaultValue]);
 
   const selected = options
-    ? options.find((option) => option?.name === selectedValue)
+    ? options.find((option) => option?.id?.toString() === selectedValue?.toString())
     : null;
 
   const handleChange = (e) => {
@@ -37,12 +37,12 @@ const SelectChain = ({
         {/* Visual representation of selected item with icon */}
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           {selected?.iconUrl && (
-            <div className="w-6 h-6 rounded-full bg-java-500 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full bg-java-500/50 flex items-center justify-center">
               <span className="text-white text-xs">
                 <img
                   src={selected?.iconUrl}
                   alt={selected?.name}
-                  className="w-4 h-4 rounded-full"
+                  className="w-5 h-5 rounded-full"
                 />
               </span>
             </div>
@@ -60,8 +60,8 @@ const SelectChain = ({
           {options.map((chain) => (
             <option
               key={`${id}-${chain.network}`}
-              value={chain.name}
-              disabled={chain.name === excludeValue} // Disable if matches excluded value
+              value={chain.id}
+              disabled={chain.id === excludeValue} // Disable if matches excluded value
             >
               {chain.name}
             </option>

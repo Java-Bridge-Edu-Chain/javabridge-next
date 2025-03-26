@@ -20,16 +20,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useConnections, useChainId } from "wagmi";
 import chainList from "@/lib/chains";
 import SelectChain from "@/components/SelectChain";
+import { fetchBalance } from "@/lib/web3-call";
 
 export function CryptoTransfer() {
+  const chainId = useChainId();
   const [amount, setAmount] = useState("2.8922");
   const [recipientAddress, setRecipientAddress] = useState();
   // Add state for from and to chains
-  const [fromChain, setFromChain] = useState(chainList[0]?.name);
-  const [toChain, setToChain] = useState(chainList[1]?.name);
+  const [fromChain, setFromChain] = useState(chainList[0]?.id);
+  const [toChain, setToChain] = useState(chainList[1]?.id);
+
+  const [fromBalance, setFromBalance] = useState(0);
+  const [toBalance, setToBalance] = useState(0);
 
   // Modified handlers to update state
   const onFromChange = (value) => {
@@ -52,31 +57,56 @@ export function CryptoTransfer() {
   // Get the connected account
   const { address, isConnected } = useAccount();
 
-  // Get the balance for the connected account
-  const { data: balanceData } = useBalance({
-    address,
-    watch: true,
-  });
-
   const onClickSelf = () => {
     setRecipientAddress(address);
   };
 
   // Log the balance when it changes
   useEffect(() => {
-    if (isConnected && balanceData) {
-      console.log("Current account balance:", balanceData);
-      console.log(
-        "Formatted balance:",
-        balanceData.formatted,
-        balanceData.symbol
-      );
-      console.log(`current address: ${address}`);
-      setRecipientAddress(address); // Set recipient address to the connected account address
-    } else {
-      console.log("Wallet not connected or balance not available");
-    }
-  }, [isConnected, balanceData]);
+    console.log(chainId);
+    const fetchUserBalance = async () => {
+      if (!isConnected) {
+        console.log("Wallet not connected or balance not available");
+        return;
+      }
+      try {
+        const x = await fetchBalance(address, chainId);
+        console.log(`balance > `, x);
+        setRecipientAddress(address); // Set recipient address to the connected account address
+      } catch (error) {
+        console.error("Error fetching balance:", error.message);
+      }
+    };
+
+    fetchUserBalance();
+  }, [isConnected, chainId, address]);
+
+  useEffect(() => {
+    const getUserBalance = async (chainId) => {
+      if (!isConnected) return 0;
+      try {
+        return await fetchBalance(address, chainId);
+      } catch (error) {
+        console.error("Error fetching balance:", error.message);
+        return 0;
+      }
+    };
+
+    console.log(`fromChain > `, fromChain); 
+    getUserBalance(fromChain).then(res => {
+      setFromBalance(res);
+    });
+    getUserBalance(toChain).then(res => {
+      setToBalance(res);
+    });
+  }, [fromChain, toChain, isConnected, address]);
+
+  useEffect(() => {
+    console.log(`fromBalance > `, fromBalance); 
+    console.log(`toBalance > `, toBalance); 
+    // Here you can handle the logic when balances change
+    // For example, you can update the UI or trigger some actions based on the new balances
+  },[fromBalance, toBalance]);
 
   return (
     <div className="flex justify-center p-4">
@@ -145,7 +175,7 @@ export function CryptoTransfer() {
                 Amount
               </Label>
               <span className="text-sm text-muted-foreground">
-                My balance: 2.9422
+                My balance: {fromBalance}
               </span>
             </div>
             <div className="flex gap-2">
@@ -172,7 +202,7 @@ export function CryptoTransfer() {
                 Recipient address
               </Label>
               <span className="text-sm text-muted-foreground">
-                Remote balance: 0.0000
+                Remote balance: {toBalance}
               </span>
             </div>
             <div className="flex gap-2">

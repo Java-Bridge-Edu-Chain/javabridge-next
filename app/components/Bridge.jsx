@@ -61,6 +61,10 @@ export function CryptoTransfer() {
     setRecipientAddress(address);
   };
 
+  const onClickMax = () => {
+    setAmount(fromBalance);
+  };
+
   // Log the balance when it changes
   useEffect(() => {
     console.log(chainId);
@@ -71,7 +75,6 @@ export function CryptoTransfer() {
       }
       try {
         const x = await fetchBalance(address, chainId);
-        console.log(`balance > `, x);
         setRecipientAddress(address); // Set recipient address to the connected account address
       } catch (error) {
         console.error("Error fetching balance:", error.message);
@@ -189,6 +192,7 @@ export function CryptoTransfer() {
               <Button
                 variant="secondary"
                 className="bg-blue-500 hover:bg-blue-600 text-white"
+                onClick={onClickMax}
               >
                 Max
               </Button>

@@ -48,6 +48,7 @@ export async function performSearch(query: string, total: number = 5): Promise<S
       throw new Error('Embedding data not found, run the extraction first');
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
     
     // Create query vector
@@ -55,6 +56,7 @@ export async function performSearch(query: string, total: number = 5): Promise<S
     
     // Find similar documents
     const results = data
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((doc: any) => ({
         id: doc.id || 'unknown',
         content: doc.content,
@@ -70,6 +72,7 @@ export async function performSearch(query: string, total: number = 5): Promise<S
       results,
       totalResults: results.length
     };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Error searching embeddings:', error);
     throw new Error(`Search error: ${error.message}`);

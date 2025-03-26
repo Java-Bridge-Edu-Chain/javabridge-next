@@ -29,7 +29,7 @@ export const RagSearchSchema = z.object({
 export interface SearchResult {
   id: string;
   content: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, string | number | boolean>; // Specify allowed types for metadata values
   score: number;
 }
 
@@ -62,6 +62,7 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
                 throw new Error('Embedding data not found, run the extraction first');
             }
             
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
             
             // Create query vector
@@ -69,6 +70,7 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
             
             // Find similar documents
             const results = data
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .map((doc: any) => ({
                     id: doc.id || 'unknown',
                     content: doc.content,
@@ -84,6 +86,7 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
                 results,
                 totalResults: results.length
             };
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error('Error searching embeddings:', error);
             throw new Error(`RAG search error: ${error.message}`);

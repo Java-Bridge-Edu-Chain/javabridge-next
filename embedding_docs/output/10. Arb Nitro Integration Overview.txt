@@ -1,0 +1,657 @@
+
+
+Reading Confirmations from the Espresso Network 
+This guide introduces a Go project that reads from the Espresso Network and monitors for 
+specific transactions, filtering them by value and sender address. You can imagine this project 
+as being a bot that alerts you when your wallet gets drained. 
+Overview 
+The hackathon-example repository provides a foundation for building applications that interact 
+with the Espresso Network. You can use this project as a starting point for developing 
+applications or more sophisticated monitoring and analysis tools. 
+Prerequisites 
+Before proceeding with this guide, you'll need: 
+• A running Arbitrum Orbit chain integrated with the Espresso Network, either locally or in 
+the cloud 
+• Access to a Caffeinated node, which serves as your interface to the Espresso Network 
+For convenience, the Caffeinated node setup is available in the same espresso-build-
+something-real repository as the previous guide, under the caff-node directory. If you've already 
+deployed your rollup following the earlier instructions, you're ready to proceed with this 
+monitoring project. 
+The Caffeinated Node 
+The Caffeinated node is a full node and your interface to the Espresso Network. It processes 
+Hotshot blocks, maintains state, and provides a JSON-RPC endpoint for monitoring 
+transactions. The monitoring tool we'll build uses these capabilities to track specific 
+transactions based on sender address and value. 
+Setup Instructions 
+Navigate to the espresso-build-something-real repository and follow these steps to configure 
+and run your caffeinated node locally: 
+1. Update the config 
+Update the caff-node/config/caff_node.json file with: 
+Copy 
+{ 
+  "chain": { 
+      "id": 1000000, 
+      ... 
+  }, 
+  ... 
+  "next-hotshot-block": 9999, 
+
+  "namespace": 1000000, 
+  "parent-chain-node-url": "WEBSOCKET_ARBITRUM_SEPOLIA_RPC_URL", 
+}    
+• Namespace and Chain ID: Both should match your rollup chain ID. Update both 
+values. 
+• Next Hotshot Block: 
+o Find the latest Hotshot block height at 
+https://explorer.decaf.testnet.espresso.network/. Update this value just before 
+running the Caffeinated node to avoid resyncing the entire chain. 
+• Parent Chain Node URL: Enter your Arbitrum Sepolia or mainnet RPC URL (must be a 
+WebSocket URL). 
+          Note: We recommend using a different RPC URL for the caff node to avoid hitting rate limits 
+(free tier should be enough). 
+2. Set Up and Run 
+1. Copy Configuration Files: 
+o Copy the l2_chain_info.json file into the caff-node/config folder 
+o Copy the database folder from the repository root to the caff-node directory. 
+          Note: Make sure the node is not running when you do this. 
+2. Start the Services: 
+o First, run docker compose up at the root of the repository. 
+o Then, run docker compose up in the caff-node folder. 
+Setting Up the Example Project 
+Instructions can be found on the README to set this project up but we will go over the steps 
+here in more detail. 
+1. Clone the Repository 
+Copy 
+git clone https://github.com/EspressoSystems/hackathon-example --recursive 
+cd hackathon-example 
+If you've already cloned the repository without the --recursive flag (e.g., through your IDE), you 
+can fetch the go-ethereum submodule with: 
+Copy 
+git submodule update --init --recursive 
+The reason we are doing this is because we want to use a forked version of the go-ethereum 
+library from offchainlabs to interact with the caffeinated node. 
+
+2. Install Dependencies 
+Copy 
+go mod tidy 
+3. Configure the Application 
+You should configure the following settings in the /config/config.json file: 
+Copy 
+{ 
+    "caff_node_url": "http://YOUR_HOST:8550", 
+    "polling_interval": 1, 
+    "value": 1, 
+    "from": "0x0000000000000000000000000000000000000000" 
+} 
+o caff_node_url: Change YOUR_HOST to either: 
+▪ localhost if running locally. 
+▪ Your EC2 instance's IPv4 address if running on the cloud. 
+o polling_interval: 
+▪ Controls how frequently the application checks for new transactions. 
+▪ Adjust based on your needs, but keep it low enough to avoid missing 
+transactions. 
+o value: Set the minimum transaction value (in wei) that you want to monitor. 
+o from: Enter the Ethereum address you want to monitor transactions from. 
+          Note: The docker setup exposes the Caffeinated node on port 8550.           Note: The code 
+divides the polling value by 2 to determine the actual polling interval. 
+4. Run the Application At the root of the repository, run the following command: 
+Copy 
+go run . 
+This will start the application and monitor the Espresso Network for transactions that match 
+your rollup and the specified criteria. 
+          Note: This monitoring tool simply logs matching transactions to the console. You can extend 
+it to perform more complex actions when transactions are detected. 
+5. Send Transactions 
+Now that you have both your rollup and Caffeinated node running, you can send test 
+transactions to your rollup. You have two options: 
+
+o Use a simple command-line transaction: 
+Copy 
+cast send ANY_ADDRESS --value 1 --private-key YOUR_PRIVATE_KEY_WITH_FUNDS --rpc-url 
+http://127.0.0.1:8547 
+o Use the transaction generator script in the espresso-build-something-real/tx-
+generator directory, which can continuously generate test transactions. See the 
+README in that repository for detailed instructions. 
+These transactions will be processed by your rollup and should appear in the monitoring tool's 
+output if they match your configured criteria. 
+          Note: The block number shown in the logs is not the latest block height of the espresso 
+network but the latest block processed by your rollup. 
+Troubleshooting 
+If you've followed the guide carefully and paid attention to the notes, you shouldn't encounter 
+many issues. However, here are solutions to some common problems: 
+Normal Warning Messages 
+The following logs are normal and not cause for concern: 
+Copy 
+2025-02-27 13:29:11 WARN [02-27|18:29:11.645] unable to get next message               err="no 
+message found" 
+2025-02-27 13:29:13 WARN [02-27|18:29:13.273] failed to fetch the transactions         err="no 
+majority consensus reached" 
+These messages simply indicate that the node is listening to the rollup but there are no new 
+transactions to process. 
+Transaction Detection Messages 
+The following logs indicate that the node is correctly listening to the rollup and has detected a 
+new transaction: 
+Copy 
+2025-03-06 INFO [03-06|21:38:50.671] Added message to queue message=487 
+... 
+2025-03-06 INFO [03-06|21:38:50.765] Now processing hotshot block "block 
+number"=2,056,058 
+... 
+2025-03-06 INFO [03-06|21:38:52.099] Initial State lastBlockHash=6033cf..9f3bef 
+lastBlockStateRoot=35ca02..3749dc 
+
+2025-03-06 INFO [03-06|21:38:52.103] Produced block block=751811..23907a 
+blockNumber=487 receipts=2 
+Syncing to the Latest Hotshot Block 
+If you see many logs like these at startup, your Caffeinated node is simply syncing to the latest 
+Hotshot block: 
+Copy 
+2025-02-27 11:22:32 INFO [02-27|16:22:32.835] No transactions found in the hotshot block 
+"block number"=1,850,985 
+2025-02-27 11:22:32 INFO [02-27|16:22:32.835] Now processing hotshot block             "block 
+number"=1,850,986 
+Solution: To reduce syncing time, update the next-hotshot-block value in caff-
+node/config/caff_node.json to the latest block height from the espresso explorer before starting 
+the node. 
+Restarting Docker Containers 
+If you stop and restart both your rollup and Caffeinated node, you might need to recopy the 
+database folder to your /caff-node folder. Failing to do this can cause your rollup and 
+Caffeinated node to fall out of sync. 
+          Note: This can result in transactions not being detected by the monitoring tool. 
+Rate Limiting Issues 
+If you're experiencing rate limiting from your RPC provider, you can adjust polling intervals in the 
+configuration files: 
+Copy 
+// In caff-node/config/caff_node.json 
+"caff-node-config": { 
+    "hotshot-polling-interval": "1ms", 
+    "retry-time": "2s", 
+}, 
+ 
+// In config/full_node.json 
+"staker": { 
+    "staker-interval": "120s", 
+    "make-assertion-interval": "120s", 
+} 
+"parent-chain-reader": { 
+
+    "poll-interval": "120s" 
+} 
+Increasing these intervals will reduce the frequency of RPC calls, helping you stay within rate 
+limits. 
+Monitoring Issue 
+If you don't see logs indicating successful block processing, your Caffeinate node might not be 
+properly connected to or in sync with the rollup. This often happens when the database 
+directory isn't properly configured. You should see logs like: 
+Copy 
+2025/03/01 10:00:00 Searching for transaction at last processed block number: 123456 
+If these logs are missing, check that: 
+• Your repository structure is correct. 
+• The docker-compose.yml file is properly configured and indented. 
+• Your caffeinated node is properly syncing with the rollup. 
+Update for Listening to Mainnet 
+To ensure your setup is ready for Arbitrum and Espresso mainnet, you'll need to make the 
+following changes in addition to those described in the Deploying Your Rollup on Mainnet 
+section in the previous guide: 
+1. Update Caffeinated Node Configuration: In caff-node/config/caff_node.json, update 
+the following values: 
+Copy 
+parent-chain-node-url: "WEBSOCKET_ARBITRUM_MAINNET_RPC_URL", 
+espresso-tee-verifier-addr: "0xE68c322e548c3a43C528091A3059F3278e0274Ed", 
+hotshot-url: "https://query.main.net.espresso.network/v0" 
+          Note: Make sure to use a WebSocket URL (starting with wss://) for your Arbitrum mainnet 
+RPC provider. 
+2. Update Hotshot Block Height: Find the latest Hotshot block height at the mainnet 
+espresso explorer and update the next-hotshot-block value in your configuration. 
+Deploying your caffeinated node on the cloud 
+Similarly to the preceding guide, the next step would be to deploy your caffeinated node on the 
+cloud. You can follow the instructions in the Cloud Configuration section of the previous guide 
+for building your EC2 instance and installing the required docker configs. Here are the steps to 
+migrate your caffeinated node to the cloud: 
+
+1. Start off from the Set Up and Run section of this guide. The steps on how to run your 
+rollup in the cloud have been covered in the previous guide. You can use the same rollup 
+config files. 
+2. Create and configure the caff-node directory structure on your EC2 instance: 
+Copy 
+# Create directory structure 
+ssh -i ~/.ssh/your-key.pem ec2-user@YOUR_HOST "mkdir -p ~/rollup/caff-
+node/{config,database,wasm}" 
+ 
+# Set permissions for directories that need write access 
+ssh -i ~/.ssh/your-key.pem ec2-user@YOUR_HOST "sudo chown -R 1000:1000 ~/rollup/caff-
+node/database ~/rollup/caff-node/wasm" 
+          Note: 
+o The config directory remains owned by ec2-user for configuration files 
+o database and wasm directories need write permissions for the Docker container 
+user (1000:1000) 
+3. Transfer the config files to your EC2 instance: From the root of the repository, run the 
+following command: 
+Copy 
+scp -i ~/.ssh/your-key.pem -r ./caff-node/config/* ec2-user@YOUR_HOST:~/rollup/caff-
+node/config/ 
+4. Copy the database from your rollup to the caff-node directory: From outside the EC2 
+instance, run the following command: 
+Copy 
+ssh -i ~/.ssh/your-key.pem ec2-user@YOUR_HOST "cp -r ~/rollup/database ~/rollup/caff-
+node/database" 
+Or from inside the EC2 instance, run the following command: 
+Copy 
+cp -r ~/rollup/database ~/rollup/caff-node/database 
+          Note: Make sure you sync and stop the rollup service before copying the database. This step 
+is crucial and is often the cause of issues. 
+5. Enable CloudWatch Logging (Optional): 
+If you want to monitor your caffeinated node logs in CloudWatch: 
+
+o Create a log group for your caffeinated node in the CloudWatch console, similar 
+to how you created log groups in the Setting up CloudWatch logging section of 
+the previous guide. 
+o Modify your caff-node/docker-compose.yml file to include CloudWatch logging: 
+Copy 
+ version: '2.2' 
+ services: 
+ caff_node: 
+    image: ghcr.io/espressosystems/nitro-espresso-integration/nitro-
+node@sha256:bf63374a00a5d6676ca39af79ac4b0f053128cb7438bcdaa746dba6656c12658 
+    container_name: caff_node 
+    ports: 
+       - "8550:8547" 
+       - "8551:8548" 
+       - "8552:8549" 
+    command: --conf.file /config/caff_node.json 
+    volumes: 
+       - ./config:/config 
+       - ./wasm:/home/user/wasm/ 
+       - ./database:/home/user/.arbitrum 
+    logging: 
+      driver: "awslogs" 
+      options: 
+        awslogs-region: "us-east-2" # Update to your EC2 instance's region 
+        awslogs-group: "caff-node-logs" 
+        awslogs-stream: "caff-node" 
+          Note: Make sure to update the awslogs-region to match your EC2 instance's region. 
+Whether you enabled logging or not, you can now transfer the docker-compose.yml file inside 
+your instance. From outside the EC2 instance, run the following command: 
+Copy 
+scp -i ~/.ssh/your-key.pem ./caff-node/docker-compose.yml ec2-
+user@YOUR_HOST:~/rollup/caff-node/ 
+
+          Note: Your rollup folder structure should be very similar to the repository structure of the 
+espresso-build-something-real repository.           Note: You can always update the docker-
+compose.yml file using nano or by copying again the file from the repository. 
+6. Connect to your EC2 instance and start the services: 
+Copy 
+ssh -i ~/.ssh/your-key.pem ec2-user@YOUR_HOST 
+cd rollup 
+docker-compose up -d 
+cd caff-node 
+docker-compose up -d 
+          Note: Do not forget to update the latest hotshot block height in the caff-
+node/config/caff_node.json from the espresso explorer to avoid resyncing the entire chain.           
+Note: You can stop the services by running docker compose down in the rollup and caff-node 
+directories.           Note: You can remove the -d flag to run see the logs of the containers in the 
+terminal. 
+Run the monitoring application 
+Once your caffeinated node is running on the cloud, update the caff_node_url in the hackathon-
+example repository's config to point to your EC2 instance's public IP address. Then try running 
+the application with the updated config. 
+Configuring Network Access 
+If you encounter connection timeouts when trying to access your EC2 instance (e.g., dial tcp 
+YOUR_HOST:8550: i/o timeout), you need to open the required ports in your EC2 security group: 
+1. In the AWS EC2 Console, navigate to your instance 
+2. Select the "Security" tab in the bottom panel 
+3. Click on the security group ID (e.g., "sg-0123456789abcdef") 
+4. In the security group page, select the "Inbound rules" tab 
+5. Click "Edit inbound rules" 
+6. Add two new rules: 
+o Type: Custom TCP, Port range: 8547, Source: Custom 0.0.0.0/0 (or your IP for 
+better security) 
+o Type: Custom TCP, Port range: 8550, Source: Custom 0.0.0.0/0 (or your IP for 
+better security) 
+7. Click "Save rules" 
+This enables external connections to your Caffeinated node (port 8550) and rollup node (port 
+8547). 
+
+Arbitrum Nitro Integration Overview 
+TL;DR - Chains and Rollup-as-a-Service (”RaaS”) providers can leverage the Espresso Network 
+to provide users with faster, more secure confirmations on their transactions. The Espresso 
+Network also provides chain operators with information about the state of their own chain and 
+the states of other chains, all of which is important for improved UX and ultimately, cross-chain 
+composability. This document outlines the steps for chains/RaaS to integrate with the Espresso 
+Network. 
+Integration at a glance - Integrating with the Espresso Network requires minimal changes to 
+Arbitrum Nitro's existing rollup design, and the key change is running the Arbitrum Nitro batch 
+poster inside a Trusted Execution Environment (”TEE”). See here for an explanation of this 
+design and see here for trust assumptions that partners should be aware of when integrating. 
+Today, Espresso has developed software to run the batch poster using SGX in Microsoft Azure. 
+We plan to release a version compatible with AWS Nitro (not to be confused with Arbitrum Nitro) 
+by EOQ1’25. 
+Prerequisites & Requirements (1-3 days*) 
+*Assumes familiarity with TEEs. Teams may want to allocate up to 7 days to upskill and deploy 
+this technology for the first time. 
+We will host a kick-off call to walk through your technical architecture, including what cloud 
+providers you work with. In an effort to expedite the integration process, we ask that you please 
+share with Espresso: 
+1. A config file that we can work from. Note: This is only needed if Espresso is running the 
+batch poster. 
+2. Direct access to your RPC node (instead of through an intermediary). Note: This is only 
+needed if Espresso is running the batch poster. 
+3. Confirmation that you are able to run the TEE within your existing infrastructure. Note: 
+Espresso is able to run it on your behalf; however we prefer to support you to run it using 
+your own infrastructure. 
+4. Confirmation of the integrating chain's current Arbitrum Nitro version. 
+5. Other pre-requisites include understanding how a TEE operates, if you aren't already 
+familiar: 
+o Docs specific to AWS Nitro Enclaves: 
+▪ Review Hello Enclaves sample application 
+▪ Install AWS Nitro on Linux OR 
+▪ Install AWS Nitro on Windows 
+o Docs specific to SGX: 
+▪ Guide to determine which hardware/cloud providers support SGX 
+▪ Guide to enable a prover using SGX (note this links to Taiko’s docs, as 
+Taiko currently uses SGX) 
+
+Run deployments (2-3 weeks) 
+We require that teams run a testnet and mainnet deployment; however chains and RaaS 
+providers have the opportunity to also run internal devnet deployments beforehand (this is 
+recommended if it's our first time working together). This process will allow us time to fix any 
+issues and bugs that may occur during testing and will ultimately ensure a more seamless 
+transition to mainnet. An illustrative integration timeline may look like this (see diagram below): 
+• An internal deployment (3-4 days) is optional but is recommended for new architecture 
+or a RaaS provider that has not previously integrated with Espresso. 
+• A devnet deployment (3-7 days) is optional but is recommended for new architecture or 
+a RaaS provider that has not previously integrated with Espresso. 
+• A testnet deployment (5-7 days) is required, and we look to run a testnet for 5-7 days 
+with no incidents before we consider deploying to mainnet. 
+• A mainnet deployment would follow a successful testnet deployment. 
+ 
+Migration Flow (1-3 hours) 
+1. Run the batch poster inside the TEE (e.g. AWS Nitro or SGX) 
+2. Deploy the EspressoTEEVerifier contract 
+3. Stop the batch poster node and copy the batch poster’s databases files to the TEE 
+4. Perform the sequencer inbox migration 
+5. New batch poster starts catching up messages and building up state 
+Support (0.5-1 hour per week) 
+
+• Espresso engineers will support your chain and RaaS provider as you navigate the 
+integration process through relevant devops services, async tech support, and calls to 
+run through integration steps. 
+• Espresso has a 24x7 support model and tracks the health and frequency of batch 
+posting to ensure that there are no delays. If something isn't working, Espresso will 
+automatically trigger an on-call procedure to investigate the incident. We recommend 
+that our integrated chains also monitor these health metrics and have an incident 
+management procedure. 
+FAQ 
+1. How much does it cost a chain or RaaS provider to integrate with Espresso? 
+1. Fees are paid by the builder of each block. Initially, in Mainnet 0.0/Decaf 0.0, 
+Espresso will run a simple builder and cover fees. Fees will not be collected from 
+rollups using Espresso or their users. There will be no third party builders during 
+Mainnet 0.0/Decaf 0.0. 
+2. What is Espresso’s latency for blocks? How long does it take blocks to reach finality? 
+1. Espresso confirmations are faster than waiting for Ethereum finality, which takes 
+12-15 minutes. Using Espresso, the current latency for blocks is 2-9s (1-3s with 
+transactions, 8s with no transactions) with HotShot finality reached after 3 
+consecutive blocks, typically in 6-20s (slower when blocks are empty). There are 
+future roadmap improvements to decrease latency and time to finality (including 
+an adjustment to finalize after 2 consecutive blocks, rather than 3, which should 
+result in a 20-30% reduction in latency). 
+3. What is Espresso’s throughput per second? 
+1. During some recent heavy load testing, we achieved ~100 TPS with small 
+transactions (~200 bytes each). We currently have a 1MB limit on the block size, 
+which performed well under the same load testing. We plan to use our Proof of 
+Stake upgrade in March 2025 to significantly improve network throughput and 
+latency with (i) an increase to the block limit, and (ii) adding erasure coding via 
+Verifiable Information Dispersal. 
+Using TEE with Nitro 
+The Espresso Network is a confirmation layer that provides chains with information about the 
+state of their own chain and the states of other chains, which is important for cross-chain 
+composability. Espresso confirmations can be used in addition to the soft confirmations from a 
+centralized sequencer, are backed by the security of the Espresso Network, and are faster than 
+waiting for Ethereum finality (12-15 minutes). 
+Purpose: This document describes how the Espresso Network provides fast confirmations to 
+Arbitrum Orbit chains. Espresso has developed a TEE based integration, which is ready for chain 
+operators and rollup-as-a-service providers to implement. There is some assumed familiarity 
+with the Arbitrum Nitro stack. 
+How it works: In a regular chain, the transaction lifecycle will look something like this: A user 
+transacts on an Arbitrum chain. The transaction is processed by the chain’s sequencer, which 
+
+provides a soft-confirmation to the user, and the transactions are packaged into a block. The 
+sequencer is responsible for collecting these blocks, compressing, and submitting them to the 
+base layer. If the base layer is Arbitrum One or Ethereum, then the transaction will take at least 
+12-15 minutes to finalize, or longer depending on how frequently the sequencer posts to the 
+base layer. In this transaction lifecycle, the user must trust that the chain’s sequencer provided 
+an honest soft-confirmation and will not act maliciously. There are limited ways to verify that the 
+sequencer and batcher acted honestly or did not censor transactions. 
+However, if the chain is integrated with the Espresso Network: The sequencer provides a soft-
+confirmation to the user, while the transactions are also sent to the Espresso Network to 
+provide a stronger confirmation secured by BFT consensus. A software component of the 
+sequencer called the batch poster (or “batcher”) is run inside a TEE and must honor the 
+Espresso Network confirmation. It cannot change the ordering or equivocate. This gives a strong 
+guarantee that the transaction will ultimately be included and finalized by the base layer. 
+• Implication: The user must trust that the chain’s sequencer provided an honest soft-
+confirmation; however the Espresso Network provides a stronger confirmation that 
+keeps the sequencer accountable and prevents the sequencer from equivocating or 
+acting maliciously. The initial implementation of the batch poster is permissioned and 
+the user must trust that it will not reorder blocks produced by the sequencer. 
+Integration considerations: **Integrating with the Espresso Network requires minimal changes 
+to Arbitrum Nitro’s existing rollup design. The key change is running the Arbitrum Nitro batch 
+poster (which collects multiple transactions, organizes them into batches, and compresses the 
+data to post to the base layer) inside a Trusted Execution Environment (“TEE”). Espresso’s 
+preferred TEE for this integration is built using Intel SGX, and we plan to support other 
+approaches in the future. 
+Effort required: We would kick off the integration process with a full walkthrough of your 
+architecture. Espresso will provide a config file that chains and RaaS providers can leverage 
+during integration. We prefer to have direct access to your node (instead of through an 
+intermediary). 
+Goal 
+The Espresso Network’s fast confirmation layer provides users with faster, more secure 
+confirmations on their transactions as well as chain operators with information about the state 
+of their own chain and the states of other chains, all of which is important for improved UX and 
+ultimately, cross-chain composability. 
+The goal of this document is to integrate the Espresso Network’s fast confirmation layer with 
+minimal changes to Arbitrum Nitro's existing rollup design. By leveraging Espresso’s fast 
+confirmations, a rollup accepts a batch only after it has been finalized by the Espresso Network. 
+This integration ensures that each batch processed by the rollup is consistent with the blocks 
+finalized via the Espresso Network. 
+This approach involves running an Arbitrum Nitro node with only the batcher enabled, operating 
+in a TEE environment (such as Intel SGX). The batcher signs the combined hash of blob hashes 
+and add this signature to the L1 transaction calldata. 
+Assumption 
+
+This document assumes that the batch poster sends only blob transactions to L1. However, in 
+some cases, it does post the data in calldata. The flow remains the same in this scenario, 
+except that the batcher signs the data directly, and the Sequencer Inbox contract verifies the 
+signature accordingly. 
+Batch Consistency Checks 
+To ensure that the batch has been finalized by the Espresso Network (“HotShot” is the name of 
+the consensus protocol), the following checks are required: 
+1. Namespace Validation: Ensure that the set of transactions in an Arbitrum Nitro batch 
+corresponds to an Arbitrum Nitro/Orbit chain namespace. Namespacing allows 
+multiple chains to use Espresso’s fast confirmation layer simultaneously by associating 
+each chain’s transactions with a unique namespace within the Espresso Network 
+blocks. 
+2. Espresso Block Merkle Proof Check: Confirm that the Arbitrum Nitro batch maps to a 
+valid HotShot block. Specifically, verify that the HotShot block associated with an 
+Arbitrum Nitro batch is a valid leaf in the Merkle tree maintained by the light client 
+contract, which stores the state of HotShot on Ethereum. 
+Integration Design 
+The integration flow is as follows: 
+ 
+Arbitrum Nitro integration flow with Espresso 
+The flow is as follows: 
+1. The sequencer calls WriteSequencerMsg on the transaction streamer. 
+2. The batcher fetches the message from the transaction streamer and submits the 
+transaction to HotShot via the transaction streamer. Code for this is already 
+implemented in the batcher here. 
+3. The batcher then calls the query API to check if the transaction has been finalized by 
+HotShot. This code is also written and can be found here. 
+
+4. Once the transaction is finalized, the batcher performs batch consistency checks. 
+5. The batcher computes the hashes of the blobs it plans to submit. (Note: Arbitrum uses 
+blob transactions.) This allows the batcher to sign the combined hash of the blobs, 
+along with other calldata fields, before sending the transaction. The signature is then 
+included in the transaction’s calldata. If blob transactions are not being used, the 
+batcher instead signs the l2MessageData along with the other calldata fields. 
+6. The Sequencer Inbox contract must be modified to verify the batcher’s signature. If the 
+signature is invalid, it will revert the transaction. 
+Batching Flow Changes 
+Running Arbitrum Nitro batch poster in TEE 
+The first set of changes require running the batch-poster in a Trusted Execution Environment 
+(TEE), specifically Intel SGX. 
+• Several LibOSes have been developed to run applications on SGX, including Gramine, 
+Occlum and EGo. We selected Gramine due to its maturity, stability, and comprehensive 
+documentation. 
+• We implemented Remote Attestation support, enabling anyone to verify the SGX proof. 
+This is accomplished by generating a Remote Attestation TLS (RA-TLS) certificate during 
+startup, which embeds the SGX attestation report (more info here). 
+Submitting Transactions to the Espresso Network (HotShot) 
+Most of the necessary code for this function (which allows the batcher to submit transactions to 
+Espresso after receiving transactions from the sequencer) is already implemented in our 
+batcher. 
+Checking for HotShot Finalization 
+We have existing code in place where the batcher prepares an Espresso justification once 
+HotShot finalizes a transaction. 
+Verifying Batch Consistency 
+Batch consistency verification involves checking the block Merkle proof and the namespace 
+proof. Jellyfish, Espresso’s cryptography library, is written in Rust. We created an espresso-
+crypto-helper Rust package that allows us to verify the Merkle proof and namespace proof. 
+To enable the Go-based batcher to use these Rust functions, we implemented a Foreign 
+Function Interface (FFI) to expose the Rust verification functions to Go. 
+Sending Transactions to L1 
+We add the batcher’s signature to the transaction calldata over the blob hashes, which can be 
+constructed using the ComputeCommitmentAndHashes method. We sign blob hashes instead 
+of the blob data itself because, in a Blob Commitment transaction, the blob data is unavailable 
+on the execution layer, only blob hashes are accessible in Solidity via the blobhash opcode. 
+In a scenario when a chain is not using blob transactions, the batcher will sign the 
+l2MessageData. 
+
+Sequencer Inbox Contract 
+• The Sequencer Inbox’s methods will need to be modified to accept the batcher 
+signature as a parameter. 
+• These methods verify that the signature is valid 
+Escape Hatch 
+We also have an escape hatch where the batch poster calls IsHotshotLive on the 
+LightClientContract before posting a batch. Each batch poster configuration allows the chain to 
+choose between two behaviors: (i) waiting for Hotshot to go live before posting the batch, or, (ii) 
+if Hotshot is not live, proceeding without checking batch consistency with Hotshot. This 
+flexibility enables chains to tailor their approach as needed. 
+Arbitrum Nitro Trust & Liveness Dependencies 
+TL;DR - The Espresso Network is a confirmation layer that provides chains with information 
+about the state of their own chain and the states of other chains, which is important for cross-
+chain composability. Espresso confirmations can be used in addition to the soft confirmations 
+from a centralized sequencer, are backed by the security of the Espresso Network, and are 
+faster than waiting for Ethereum finality (12-15 minutes). 
+Recap: optimistic chain architecture - There are two components of the Arbitrum Nitro stack: 
+1. The validator, the fraud proof mechanism, and everything that exists to secure the 
+integrity of the chain. 
+2. The sequencer, which includes the batcher, and exists to drive progress and have some 
+influence (in that they can re-order transactions) without the ability to corrupt the chain 
+and steal user funds. 
+What Espresso is changing and why - 
+• What? Espresso is not changing how sequencing is done; instead we are ensuring that 
+what gets sequenced is immediately posted to the Espresso Network and what is 
+ultimately published to the L1, is consistent with the Espresso Network. On a technical 
+level, we do this by modifying the software module (the batcher), ensuring that the 
+batcher publishes batches to the Espresso Network. The batcher module is run inside a 
+TEE so that even if hacked the batcher will never publish something to the L1 that is 
+inconsistent with what was published and finalized on the Espresso Network. 
+• Why? These additional checks confirm the order of transactions and prevent 
+equivocation prior to finality. These confirmations provide stronger guarantees to chains 
+wanting to verify their own state, or the state of chains they want to compose with. 
+Importantly these changes are limited in power and do not provide the ability to directly 
+steal user funds, although there may still be chain reorganization risk for applications 
+like bridges that rely on soft-confirmations (instead of waiting for chain finality). 
+Resources:  
+• This document outlines key trust and liveness dependencies to help chains to 
+understand the design. 
+
+• The detailed technical design is outlined here for reference. 
+Liveness Dependencies 
+Batch Poster 
+ELI5: The chain’s sequencer batches individual transactions into blocks, and the chain’s batch 
+poster is responsible for collecting these blocks and submitting them to the base layer (for 
+example, an Arbitrum Orbit L3 would typically post batches to Arbitrum One, an L2). If the batch 
+poster were to crash, customers could still use the chain regularly and would only be limited in 
+their ability to withdraw funds (as delays in batch posting impact the fraud proof window). 
+Technical explainer: the batch poster does play a role in the liveness of withdrawals. Any 
+downtime experienced by the batch poster adds to the latency of withdrawals initiated during 
+its outage. This is because the challenge period cannot begin until the batch poster comes back 
+online and posts a batch containing the withdrawal. Given that the challenge period for an 
+optimistic rollup is seven days, the delay caused by a batch poster outage would only become 
+noticeable to users if the batch poster remains down for several days, rather than just a few 
+minutes. While this scenario is unlikely, it remains a potential risk. An extended delay in batch 
+posting (>72 hours) may trigger Arbitrum Nitro’s force-inclusion mechanism and may result in a 
+chain reorganization that may impact clients or applications that rely on soft confirmations. See 
+batch posting for details. 
+Integration considerations: The responsibility of running infrastructure (whether operated by 
+your Rollup-as-a-Service (”RaaS”) provider or your chain) is unchanged. In either case, your 
+chain (or your RaaS provider) will be required to run a fork of the Nitro batch poster developed by 
+Espresso Systems. The batch poster will need to be run in a Trusted Execution Environment 
+(”TEE”) that is SGX supported, with support for TDX and AWS Nitro coming soon. Espresso can 
+share a getting-started guide, links to relevance code, and technical/integration support. 
+Espresso Network 
+ELI5: The Espresso Network is designed to enhance the security of soft confirmations, which are 
+given when a transaction has been included in a pending, recent block but has not yet been 
+finalized. In doing this, Espresso Network’s confirmations speed up the process of a transaction 
+reaching finality (when a transaction is considered irreversible and the network has reached 
+consensus that the transaction is valid) by providing a quicker indication that a transaction is 
+likely to be valid. In the unlikely event that the Espresso Network goes offline, there may be an 
+impact on a users’ ability to withdraw funds as outlined above (see Batch Poster). Chains can 
+choose to (i) disable the escape hatch, or (ii) enable the escape hatch in the event that the 
+Espresso Network is offline. Chains that enable the escape hatch may result in clients and 
+bridges building an incorrect state due to their reliance on soft confirmations. 
+Technical explainer: Similarly, if the Espresso Network goes offline, there can be a similar 
+impact on withdrawals as outlined above (see Batch Poster). While the likelihood of such 
+downtime is low, it remains a possibility. 
+To mitigate these risks, the chain can configure the Escape Hatch feature in the batch poster 
+configuration: 
+• Enabling the Escape Hatch - When the Escape Hatch is configured, the batch poster 
+bypasses Espresso checks and posts batches directly to parent chain (e.g. Arbitrum 
+
+One) if the Espresso Network is down. Once the Espresso Network is back online, it will 
+resume verifying Espresso checks before posting batches. Note: The Escape Hatch is 
+configured through the batch poster config, but the logic for switching between 
+checking Espresso checks based on Espresso Network’s liveness is automated through 
+code. However, configuring the Escape Hatch has implications for any clients or bridges 
+relying on the Espresso Network for finality. If the Escape Hatch is activated while the 
+Espresso Network is offline, clients and bridges may build an incorrect state. 
+• Disabling the Escape Hatch - We recommend that chains avoid enabling the Escape 
+Hatch by default. Although the likelihood of the Espresso Network being offline for an 
+extended period is minimal, activating the Escape Hatch could compromise the integrity 
+of client-side states, making bridge integrations using Espresso on the chain less 
+secure. Chains that enable the Escape Hatch may result in clients and bridges building 
+an incorrect state due to their reliance on soft confirmations. 
+Integration considerations: Chains can choose between two options: 
+• (i) enable the Escape Hatch to post batches directly to the base layer (e.g., Arbitrum 
+One) and default back to the Espresso Network once it is back online. 
+• (ii) disable the Escape Hatch - wait until the Espresso Network comes back online 
+If your team feels strongly about enabling the Escape Hatch then Espresso can meet with the 
+chain and/or RaaS provider to discuss how we plan to mitigate this risk. 
+Hotshot URL 
+ELI5: The Espresso Network provides updates on state via the HotShot URL, similar to an RPC. If 
+the HotShot URL were to go offline or provide an incorrect state, this may trigger a failure that 
+could delay batch posting. 
+Technical explainer: The batch poster configuration specifies a Hotshot URL, which is 
+analogous to an RPC URL. This URL is used to connect to the node running the Hotshot network 
+to retrieve updates. 
+There is a liveness dependency on the Hotshot URL. If this URL provides incorrect state, it will 
+lead to Espresso Network specific checks failing and thus preventing the batch poster from 
+being able to post batches. The likelihood of this is low but still possible. 
+Integration considerations: None. Please note that chains can verify liveness by checking the 
+Espresso Explorer and Query Service to verify that the Espresso Network is live and the HotShot 
+URL is working as intended. If there have been no updates for 15-30 minutes, please assume 
+there is an issue that we will investigate via on-call procedures and resolve. 
+Trust Dependencies 
+L1 URL 
+We retrieve the Arbitrum state from an RPC node. This introduces a trust dependency on the 
+RPC node to provide accurate state information. You may configure the batcher to use the same 
+Arbitrum RPC that it is currently using. 
+Light Client Contract 
+
+A light client contract has been deployed on the Arbitrum network. This contract maintains the 
+state of the Hotshot network. There is a trust dependency that this contract remains secure, 
+unhacked, and consistently contains the correct state. 
+SGX Intel Infrastructure 
+We have built our design using Intel SGX, so there is a trust dependency that Intel is behaving 
+honestly and their infrastructure is secure and trustworthy. 
+ 

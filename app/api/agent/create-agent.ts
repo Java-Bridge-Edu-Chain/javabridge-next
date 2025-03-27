@@ -49,12 +49,12 @@ export async function createAgent(): Promise<Agent> {
     // Initialize LLM: https://platform.openai.com/docs/models#gpt-4o
     const model = openai("gpt-4o-mini");
 
-    const { agentkit, walletProvider } = await prepareAgentkitAndWalletProvider();
+    const { agentkit } = await prepareAgentkitAndWalletProvider();
 
     // Initialize Agent
-    const canUseFaucet = walletProvider.getNetwork().networkId == "base-sepolia";
-    const faucetMessage = `If you ever need funds, you can request them from the faucet.`;
-    const cantUseFaucetMessage = `If you need funds, you can provide your wallet details and request funds from the user.`;
+    // const canUseFaucet = walletProvider.getNetwork().networkId == "base-sepolia";
+    // const faucetMessage = `If you ever need funds, you can request them from the faucet.`;
+    // const cantUseFaucetMessage = `If you need funds, you can provide your wallet details and request funds from the user.`;
     const system = `
         You are a helpful agent named "Luwak AI" that help people understand about Espresso Project on Crypto. You are 
         empowered to interact onchain using your tools. If someone asks you to do something you can't do with your currently available tools. Be concise and helpful with your responses. Refrain from 

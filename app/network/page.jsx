@@ -5,14 +5,20 @@ import chainList from "@/lib/chains";
 console.log(chainList);
 const handleAddNetworkk = async (chain) => {
   try {
-    if (!chain || !chain.id || !chain.rpcUrls?.default?.https || !chain.name || !chain.nativeCurrency) {
+    if (
+      !chain ||
+      !chain.id ||
+      !chain.rpcUrls?.default?.https ||
+      !chain.name ||
+      !chain.nativeCurrency
+    ) {
       throw new Error("Invalid chain data provided.");
     }
 
     const chainIdHex = `0x${Number(chain.id).toString(16)}`; // Convert chain.id to hexadecimal
     console.log(chainIdHex);
 
-    const o = {
+    let o = {
       method: "wallet_addEthereumChain",
       params: [
         {
@@ -24,13 +30,20 @@ const handleAddNetworkk = async (chain) => {
             symbol: chain.nativeCurrency.symbol,
             decimals: Number(chain.nativeCurrency.decimals),
           },
-          blockExplorerUrls: [chain.blockExplorers?.default?.url ?? ""],
-        },null
+        },
+        null,
       ],
     };
-    console.log(o);
 
-    await window.ethereum?.request(o);
+    // if (chain?.blockExplorers?.default !== undefined) {
+    //   o.params[0].blockExplorerUrls = [
+    //     chain.blockExplorers?.default?.url ?? "",
+    //   ];
+    // }
+
+    await window.ethereum?.request(o).then((res) => {
+      console.log(res);
+    });
   } catch (error) {
     console.error("Failed to add network:", error);
   }
@@ -46,7 +59,8 @@ export default function Chain() {
             <span className="animate-gradient">Add Chain</span>
           </h1>
           <p className="text-java-600 max-w-xl mx-auto">
-            List of supported chains. Click on the button to add the network to your wallet.
+            List of supported chains. Click on the button to add the network to
+            your wallet.
           </p>
         </div>
 

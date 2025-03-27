@@ -56,7 +56,7 @@ export default function Chain() {
         {/* Hero section with animation */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-java-400 via-java-600 to-java-800 mb-3">
-            <span className="animate-gradient">Add Chain</span>
+            <span className="animate-gradient">Add Network to Wallet</span>
           </h1>
           <p className="text-java-600 max-w-xl mx-auto">
             List of supported chains. Click on the button to add the network to
@@ -68,13 +68,13 @@ export default function Chain() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {chainList.map((chain, index) => (
             <div
-              className="p-4 border bg-white rounded-lg shadow-md"
+              className="p-4 border bg-white rounded-3xl shadow-md"
               key={`chain-${index}`}
             >
-              <h2 className="text-lg font-semibold text-java-500 text-center">
+              <h2 className="text-xl font-bold text-java-500 text-center">
                 {chain.name}
               </h2>
-              <div className="flex flex-col justify-between items-center text-black">
+              <div className="flex flex-col justify-evenly text-black">
                 <div className="flex flex-col justify-between">
                   <div className="my-2">
                     <h6 className="font-semibold text-java-400 text-center">

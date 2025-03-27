@@ -1,13 +1,13 @@
-"use client";
-
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Button } from "@/components/ui/button";
-import { Coffee } from "lucide-react";
 import Providers from "./providers";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Link from "next/link";
+import meta from '@/lib/meta'
 
+export const metadata = meta;
 /**
  * Root layout for the page
  *
@@ -29,14 +29,20 @@ export default function RootLayout({ children }) {
           {/* Header with warm wood-like texture and gradient */}
           <header className="sticky top-0 z-40 w-full border-b border-java-800/40 bg-gradient-to-r from-java-900 via-java-800 to-java-900 backdrop-blur supports-[backdrop-filter]:bg-java-900/80 shadow-md">
             <div className="container flex h-20 items-center justify-between py-4">
-              <div className="flex items-center gap-3 transition-all duration-300 hover:scale-105">
-                <div className="p-2 bg-amber-700 rounded-full shadow-lg flex items-center justify-center">
-                  <Coffee className="h-8 w-8 text-java-100" />
+              <Link href="/">
+                <div className="flex items-center gap-1 transition-all duration-300 hover:scale-105">
+                  <div className="rounded-full shadow-lg flex items-center justify-center">
+                    {/* <Coffee className="h-8 w-8 text-java-100" /> */}
+                    <img
+                      className="h-12 w-12 rounded-full shadow-lg"
+                      src="/img/logo.png"
+                    />
+                  </div>
+                  <span className="font-bold text-2xl tracking-tight bg-gradient-to-r from-amber-200 to-java-100 text-transparent bg-clip-text">
+                    JavaBridge
+                  </span>
                 </div>
-                <span className="font-bold text-2xl tracking-tight bg-gradient-to-r from-amber-200 to-java-100 text-transparent bg-clip-text">
-                  JavaBridge
-                </span>
-              </div>
+              </Link>
               <div className="hidden md:flex space-x-1">
                 <Button
                   variant="ghost"
@@ -49,7 +55,7 @@ export default function RootLayout({ children }) {
                   variant="ghost"
                   className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
                 >
-                  <a href="/network">Add Network</a>
+                  <Link href="/network">Network</Link>
                 </Button>
                 <ConnectButton />
               </div>
@@ -63,14 +69,17 @@ export default function RootLayout({ children }) {
           {/* Footer with warm wooden texture */}
           <footer className="border-t border-java-800/40 bg-gradient-to-r from-java-900 via-amber-950 to-java-900">
             <div className="container flex flex-col items-center gap-6 py-8 md:flex-row md:justify-between">
-              <div className="flex items-center gap-3 transition-all duration-300 hover:scale-105">
-                <Coffee className="h-6 w-6 text-amber-400" />
+              {/* <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105">
+                <img
+                  className="h-10 w-10 rounded-full shadow-lg"
+                  src="/img/logo.png"
+                />
                 <span className="font-medium text-lg tracking-tight text-java-100">
                   JavaBridge
                 </span>
-              </div>
+              </div> */}
 
-              <div className="flex gap-6 text-sm text-amber-400">
+              {/* <div className="flex gap-6 text-sm text-amber-400">
                 <a
                   href="#"
                   target="_blank"
@@ -95,10 +104,9 @@ export default function RootLayout({ children }) {
                 >
                   <span>Community</span>
                 </a>
-              </div>
+              </div> */}
 
-              <div className="text-xs text-amber-400/80">
-                <p>Bridging your data with elegance</p>
+              <div className="text-xs text-amber-200/80">
                 <p className="mt-1">
                   © {new Date().getFullYear()} JavaBridge, Inc.
                 </p>

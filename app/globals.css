@@ -108,3 +108,10 @@ body {
 .float-bean {
   animation: float 6s ease-in-out infinite;
 }
+
+
+/* Rainbowkit Override */
+
+[data-rk]{
+  --rk-colors-accentColor: #ec8c2b !important;
+}

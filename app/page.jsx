@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  Sparkles,
-} from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Bridge from "./components/Bridge";
 
 /**

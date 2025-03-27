@@ -5,7 +5,8 @@ import React from "react";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import chainList from '@/lib/chains.js';
+import chainList from "@/lib/chains.js";
+import { Toaster } from "@/components/ui/toaster";
 
 const config = getDefaultConfig({
   appName: "JavaBridge",
@@ -28,7 +29,13 @@ export default function Providers({ children }) {
     <>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider initialChain={chainList[0]} showRecentTransactions={true}>{children}</RainbowKitProvider>
+          <RainbowKitProvider
+            initialChain={chainList[0]}
+            showRecentTransactions={true}
+          >
+            {children}
+            <Toaster />
+          </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </>

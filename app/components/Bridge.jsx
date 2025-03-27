@@ -13,23 +13,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
+import { getChainById } from "@/lib/chains";
 import { useAccount, useConnections, useChainId } from "wagmi";
 import chainList from "@/lib/chains";
 import SelectChain from "@/components/SelectChain";
 import { fetchBalance, connect } from "@/lib/web3-call";
-import {getBridgeContract } from "@/lib/contracts";
+import { getBridgeContract } from "@/lib/contracts";
 import { parseEther } from "viem";
+import { useToast } from "@/hooks/use-toast";
+import { formatNiceNumber } from "@/lib/utils";
 
 export function CryptoTransfer() {
   const chainId = useChainId();
-  const [amount, setAmount] = useState("2.8922");
+  const [amount, setAmount] = useState("0");
   const [recipientAddress, setRecipientAddress] = useState();
   // Add state for from and to chains
   const [fromChain, setFromChain] = useState(chainList[0]?.id);
@@ -37,6 +33,7 @@ export function CryptoTransfer() {
 
   const [fromBalance, setFromBalance] = useState(0);
   const [toBalance, setToBalance] = useState(0);
+  const { toast } = useToast();
 
   // Modified handlers to update state
   const onFromChange = (value) => {
@@ -64,32 +61,57 @@ export function CryptoTransfer() {
   };
 
   const onClickMax = () => {
-    setAmount(fromBalance);
+    setAmount(formatNiceNumber(fromBalance));
   };
 
   // Function to handle the continue button click
   const onClickContinue = useCallback(async () => {
     // await window.ethereum.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
-    console.log(`from ${fromChain} to ${toChain} amount: ${amount}, recipient ${recipientAddress}`, );
-    const walletClient = await connect({
-      chainId: fromChain,
-    });
+    console.log(
+      `from ${fromChain} to ${toChain} amount: ${amount}, recipient ${recipientAddress}`
+    );
+    if (!isConnected) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (fromChain.toString() != chainId.toString()) {
+      const tgt_chain = getChainById(fromChain);
+      toast({
+        title: "Wrong network",
+        description: `Please switch to ${tgt_chain?.name} network`,
+        variant: "destructive",
+      });
+      return;
+    }
 
-    const [addressClient] = await walletClient.requestAddresses();
-    console.log(walletClient, addressClient);
+    try {
+      const walletClient = await connect({
+        chainId: fromChain,
+      });
 
-    console.log(fromChain, toChain);
-    const contract = await getBridgeContract(fromChain, toChain);
+      console.log(fromChain, toChain);
+      const contract = await getBridgeContract(fromChain, toChain);
 
-    const hash  = await walletClient.writeContract({
-      address: contract.address,
-      abi: contract.abi,
-      functionName: 'depositEth',
-      value: parseEther(amount), // Convert to Wei
-      account: address,
-    });
-    console.log(hash);
-  }, [fromChain, toChain, amount, recipientAddress]);
+      const hash = await walletClient.writeContract({
+        address: contract.address,
+        abi: contract.abi,
+        functionName: "depositEth",
+        value: parseEther(amount), // Convert to Wei
+        account: address,
+      });
+    } catch (error) {
+      console.error("Error in onClickContinue:", error.message);
+      toast({
+        title: "Transaction failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  }, [fromChain, toChain, amount, recipientAddress, chainId, isConnected]);
 
   // Log the balance when it changes
   useEffect(() => {
@@ -125,7 +147,7 @@ export function CryptoTransfer() {
     console.log(`fromChain > `, fromChain);
     getUserBalance(fromChain).then((res) => {
       console.log(fromChain, res);
-      setFromBalance(res);
+      setFromBalance(formatNiceNumber(res));
     });
     getUserBalance(toChain).then((res) => {
       setToBalance(res);
@@ -142,7 +164,7 @@ export function CryptoTransfer() {
   return (
     <div className="flex justify-center p-4">
       <Card className="w-full max-w-md rounded-3xl shadow-lg">
-        <CardContent className="p-6">
+        <CardContent className="pb-6 pt-2">
           <div className="flex items-end justify-between gap-2 mb-4">
             <div>
               <SelectChain
@@ -213,13 +235,13 @@ export function CryptoTransfer() {
               <Input
                 type="text"
                 id="amount"
-                value={amount}
+                value={amount ?? 0}
                 onChange={(e) => setAmount(e.target.value)}
                 className="rounded-md"
               />
               <Button
                 variant="secondary"
-                className="bg-blue-500 hover:bg-blue-600 text-white"
+                className="bg-java-500 hover:bg-java-400 text-white"
                 onClick={onClickMax}
               >
                 Max
@@ -241,13 +263,13 @@ export function CryptoTransfer() {
               <Input
                 type="text"
                 id="recipient"
-                value={recipientAddress}
+                value={recipientAddress ?? ""}
                 onChange={(e) => setRecipientAddress(e.target.value)}
                 className="rounded-md text-xs"
               />
               <Button
                 variant="secondary"
-                className="bg-blue-500 hover:bg-blue-600 text-white"
+                className="bg-java-500 hover:bg-java-400 text-white"
                 onClick={onClickSelf}
               >
                 Self
@@ -256,21 +278,13 @@ export function CryptoTransfer() {
           </div>
 
           {/* Continue button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="w-full bg-[#ff6347] hover:bg-[#ff5335] text-black font-medium py-6 rounded-xl h-12"
-                  onClick={onClickContinue}
-                >
-                  Continue
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Proceed with transfer</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
+          <Button
+            className="w-full bg-primary text-white font-bold uppercase py-6 rounded-xl h-12"
+            onClick={onClickContinue}
+          >
+            Continue
+          </Button>
         </CardContent>
       </Card>
     </div>

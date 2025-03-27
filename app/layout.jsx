@@ -42,31 +42,24 @@ export default function RootLayout({ children }) {
                   variant="ghost"
                   className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
                 >
-                  Features
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
-                >
                   Docs
                 </Button>
                 <Button
+                  asChild
                   variant="ghost"
                   className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
                 >
-                  Pricing
+                  <a href="/network">Add Network</a>
                 </Button>
                 <ConnectButton />
               </div>
             </div>
           </header>
-
           <main className="flex-grow flex justify-center p-4 bg-java-100">
             <div className="container py-10 relative">
               <div className="relative z-10">{children}</div>
             </div>
           </main>
-
           {/* Footer with warm wooden texture */}
           <footer className="border-t border-java-800/40 bg-gradient-to-r from-java-900 via-amber-950 to-java-900">
             <div className="container flex flex-col items-center gap-6 py-8 md:flex-row md:justify-between">

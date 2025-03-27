@@ -46,7 +46,10 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
 
     @CreateAction({
         name: "rag-search",
-        description: "Search for relevant documents based on a query. if user ask for crypto project like espresso, arbitrum, execute this function first.",
+        description: `Search for relevant documents based on a query. if user ask for crypto project like espresso, espresso network, espresso node, espresso testnet,
+        arbitrum orbit chain,TEE, Bridging Espresso, Espresso Builder APi, Espresso API,
+        caffeinated node, mainnet 0, testnets, ZK Rollup, Optimistic Rollup, HotShot, EspressoDA, data availability, espresso builder,
+         execute this function first.`,
         schema: RagSearchSchema,
     })
     async search(args: z.infer<typeof RagSearchSchema>): Promise<SearchResponse> {

@@ -43,5 +43,5 @@ next-env.d.ts
 
 
 #embeddings
-/embedding_docs/input/*
+/embedding_docs/db/*
 /embedding_docs/output/*

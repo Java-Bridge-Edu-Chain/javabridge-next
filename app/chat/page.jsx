@@ -99,7 +99,7 @@ export default function Home() {
                 <Coffee className="w-5 h-5 text-amber-100" />
               </div>
               <div>
-                <h2 className="font-semibold text-amber-100">Digital Luwak</h2>
+                <h2 className="font-semibold text-amber-100">Luwak AI</h2>
                 <p className="text-xs text-amber-400/70">
                   Brewing blockchain solutions
                 </p>
@@ -127,7 +127,7 @@ export default function Home() {
                       <Bean className="w-8 h-8 text-amber-300/60" />
                     </div>
                     <p className="text-amber-400/70 max-w-xs mx-auto">
-                      Start chatting with Digital Luwak, your expert assistant
+                      Start chatting with Luwak AI, your expert assistant
                       for JavaBridge operations
                     </p>
                     <div className="grid grid-cols-2 gap-2 mt-6">
@@ -146,12 +146,12 @@ export default function Home() {
                         variant="outline"
                         className="border-amber-700/30 bg-amber-900/30 hover:bg-amber-800/40 text-amber-300 gap-2 text-xs py-2 h-auto"
                         onClick={() => {
-                          setInput("What is Digital Luwak?");
-                          sendMessage("What is Digital Luwak?");
+                          setInput("What is Luwak AI?");
+                          sendMessage("What is Luwak AI?");
                         }}
                       >
                         <Droplets className="w-3 h-3" />
-                        What is Digital Luwak?
+                        What is Luwak AI?
                       </Button>
                     </div>
                   </div>
@@ -268,7 +268,7 @@ export default function Home() {
               <Input
                 type="text"
                 className="flex-grow py-5 px-4 bg-amber-900/30 border-amber-700/30 text-amber-100 placeholder-amber-500/50 focus:ring-amber-500/40 focus-visible:ring-offset-amber-900"
-                placeholder="Ask Digital Luwak about JavaBridge..."
+                placeholder="Ask Luwak AI about JavaBridge..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && onSendMessage()}

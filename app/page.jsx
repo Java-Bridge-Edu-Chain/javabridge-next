@@ -20,7 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Bridge from "./components/Bridge";
 
 /**
- * Home page for the JavaBridge interface with Digital Luwak chat
+ * Home page for the JavaBridge interface with Luwak AI chat
  *
  * @returns {React.ReactNode} The home page
  */

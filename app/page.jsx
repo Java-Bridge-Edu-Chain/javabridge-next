@@ -1,22 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useAgent } from "../hooks/useAgent";
-import ReactMarkdown from "react-markdown";
 import {
-  Coffee,
-  Send,
   Sparkles,
-  Bean,
-  BookCopy,
-  Droplets,
-  Gauge,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Bridge from "./components/Bridge";
 
 /**

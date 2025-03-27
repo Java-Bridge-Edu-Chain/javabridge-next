@@ -78,8 +78,8 @@ export function CryptoTransfer() {
     const [addressClient] = await walletClient.requestAddresses();
     console.log(walletClient, addressClient);
 
+    console.log(fromChain, toChain);
     const contract = await getBridgeContract(fromChain, toChain);
-    // console.log(contract);
 
     const hash  = await walletClient.writeContract({
       address: contract.address,
@@ -89,10 +89,6 @@ export function CryptoTransfer() {
       account: address,
     });
     console.log(hash);
-
-
-    console.log(`client > `, client);
-
   }, [fromChain, toChain, amount, recipientAddress]);
 
   // Log the balance when it changes

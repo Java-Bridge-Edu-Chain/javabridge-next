@@ -59,7 +59,7 @@ const SelectChain = ({
         >
           {options.map((chain) => (
             <option
-              key={`${id}-${chain.network}`}
+              key={`${id}-${chain.id}`}
               value={chain.id}
               disabled={chain.id === excludeValue} // Disable if matches excluded value
             >

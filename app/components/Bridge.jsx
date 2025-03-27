@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronDown, RotateCw } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +23,9 @@ import {
 import { useAccount, useConnections, useChainId } from "wagmi";
 import chainList from "@/lib/chains";
 import SelectChain from "@/components/SelectChain";
-import { fetchBalance } from "@/lib/web3-call";
+import { fetchBalance, connect } from "@/lib/web3-call";
+import {getBridgeContract } from "@/lib/contracts";
+import { parseEther } from "viem";
 
 export function CryptoTransfer() {
   const chainId = useChainId();
@@ -65,6 +67,34 @@ export function CryptoTransfer() {
     setAmount(fromBalance);
   };
 
+  // Function to handle the continue button click
+  const onClickContinue = useCallback(async () => {
+    // await window.ethereum.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
+    console.log(`from ${fromChain} to ${toChain} amount: ${amount}, recipient ${recipientAddress}`, );
+    const walletClient = await connect({
+      chainId: fromChain,
+    });
+
+    const [addressClient] = await walletClient.requestAddresses();
+    console.log(walletClient, addressClient);
+
+    const contract = await getBridgeContract(fromChain, toChain);
+    // console.log(contract);
+
+    const hash  = await walletClient.writeContract({
+      address: contract.address,
+      abi: contract.abi,
+      functionName: 'depositEth',
+      value: parseEther(amount), // Convert to Wei
+      account: address,
+    });
+    console.log(hash);
+
+
+    console.log(`client > `, client);
+
+  }, [fromChain, toChain, amount, recipientAddress]);
+
   // Log the balance when it changes
   useEffect(() => {
     console.log(chainId);
@@ -75,6 +105,7 @@ export function CryptoTransfer() {
       }
       try {
         const x = await fetchBalance(address, chainId);
+        console.log(`x > `, x);
         setRecipientAddress(address); // Set recipient address to the connected account address
       } catch (error) {
         console.error("Error fetching balance:", error.message);
@@ -95,21 +126,22 @@ export function CryptoTransfer() {
       }
     };
 
-    console.log(`fromChain > `, fromChain); 
-    getUserBalance(fromChain).then(res => {
+    console.log(`fromChain > `, fromChain);
+    getUserBalance(fromChain).then((res) => {
+      console.log(fromChain, res);
       setFromBalance(res);
     });
-    getUserBalance(toChain).then(res => {
+    getUserBalance(toChain).then((res) => {
       setToBalance(res);
     });
   }, [fromChain, toChain, isConnected, address]);
 
   useEffect(() => {
-    console.log(`fromBalance > `, fromBalance); 
-    console.log(`toBalance > `, toBalance); 
+    console.log(`fromBalance > `, fromBalance);
+    console.log(`toBalance > `, toBalance);
     // Here you can handle the logic when balances change
     // For example, you can update the UI or trigger some actions based on the new balances
-  },[fromBalance, toBalance]);
+  }, [fromBalance, toBalance]);
 
   return (
     <div className="flex justify-center p-4">
@@ -132,7 +164,7 @@ export function CryptoTransfer() {
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800"
                 onClick={handleSwitchChains}
               >
-                <RotateCw className="h-4 w-4" />
+                <RefreshCw className="h-4 w-4" />
               </Button>
             </div>
             <div>
@@ -231,7 +263,10 @@ export function CryptoTransfer() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button className="w-full bg-[#ff6347] hover:bg-[#ff5335] text-black font-medium py-6 rounded-xl h-12">
+                <Button
+                  className="w-full bg-[#ff6347] hover:bg-[#ff5335] text-black font-medium py-6 rounded-xl h-12"
+                  onClick={onClickContinue}
+                >
                   Continue
                 </Button>
               </TooltipTrigger>
@@ -257,4 +292,4 @@ const Bridge = () => {
   // </Card></>);
 };
 
-export default Bridge;
+export default CryptoTransfer;

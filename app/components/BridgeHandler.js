@@ -9,6 +9,7 @@ const generateRandomId = () => {
     return randomId.toString(); // Convert to string if needed
 };
 
+/* eslint-disable @next/next/no-async-client-component */
 const BridgeHandler = async ({
     isConnected,
     fromChain,

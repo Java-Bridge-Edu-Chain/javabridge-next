@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,13 +22,30 @@ import { formatNiceNumber } from "@/lib/utils";
 import BridgeHandler from "./BridgeHandler";
 import { useSearchParams } from "next/navigation";
 
-export function CryptoTransfer() {
+// Component that uses useSearchParams hook
+function CryptoTransferWithSearchParams() {
   const searchParams = useSearchParams();
   const initialFromChain = searchParams.get("fromChainId") || chainList[0]?.id;
   const initialToChain = searchParams.get("toChainId") || chainList[1]?.id;
   const initialAmount = searchParams.get("amount") || "0";
   const initialRecipientAddress = searchParams.get("targetAddress") || null;
 
+  return (
+    <CryptoTransfer 
+      initialFromChain={initialFromChain}
+      initialToChain={initialToChain}
+      initialAmount={initialAmount}
+      initialRecipientAddress={initialRecipientAddress}
+    />
+  );
+}
+
+export function CryptoTransfer({ 
+  initialFromChain = chainList[0]?.id, 
+  initialToChain = chainList[1]?.id, 
+  initialAmount = "0", 
+  initialRecipientAddress = null 
+}) {
   const chainId = useChainId();
   const [amount, setAmount] = useState(initialAmount ?? 0);
   const [recipientAddress, setRecipientAddress] = useState(
@@ -298,7 +315,9 @@ export function CryptoTransfer() {
 const Bridge = () => {
   return (
     <>
-      <CryptoTransfer />
+      <Suspense fallback={null}>
+        <CryptoTransferWithSearchParams />
+      </Suspense>
     </>
   );
   // return (<><Card className="border-java-700/30 bg-java-500 backdrop-blur-md overflow-hidden shadow-[0_0_15px_rgba(200,140,50,0.15)]">

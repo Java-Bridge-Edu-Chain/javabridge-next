@@ -3,10 +3,11 @@ import { ActionProvider, WalletProvider, CreateAction } from "@coinbase/agentkit
 import { z } from "zod";
 
 export const BridgeActionSchema = z.object({
-  fromChainId: z.string().or(z.number()).describe("Source chain ID"),
+  fromChainId: z.string().or(z.number()).describe("Source chain ID. default is Arbitrum Sepolia"),
   toChainId: z.string().or(z.number()).describe("Destination chain ID"),
   amount: z.string().describe("Amount to bridge"),
-  targetAddress: z.string().nullable().default(null).describe("Target wallet address. if not provided, use null. the address starts with 0x"),
+  targetAddress: z.string().nullable().default(null).describe(`Target wallet address, the address starts with 0x example(0x5725428F8AfF51289ddB0C7b477a74BaF3E99C59). 
+    if not provided or wrong format, use null instead.`),
 });
 
 let supportedChains: string="";

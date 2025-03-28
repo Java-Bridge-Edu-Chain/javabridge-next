@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { createAgent } from "./create-agent";
 import { Message, generateId, generateText } from "ai";
 import {rewriteAgent} from './characters';
-import { processMessageText } from "@/lib/utils";
 
 const messages: Message[] = [];
 

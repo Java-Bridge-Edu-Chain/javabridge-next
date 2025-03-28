@@ -64,7 +64,7 @@ const BridgeHandler = async ({
             case "deposit":
                 const randomId = generateRandomId();
                 console.log("deposit function called");
-                const targetNetwork =  fromChain.toString() == "666"? "balibeans": "gayoroll;"
+                const targetNetwork =  fromChain.toString() == "666"? "balibeans": "gayoroll"
                 console.log(randomId, recipientAddress, targetNetwork, parseEther(amount));
                 hash = await walletClient.writeContract({
                     address: contract.address,

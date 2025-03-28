@@ -1,22 +1,75 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { User, Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { processMessageText } from "@/lib/utils";
+
+import { useRouter } from 'next/router'; 
 
 export default function ChatMessage({ text, sender }) {
   const isUser = sender === "user";
+  const [countdown, setCountdown] = useState(5);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  // Process the text before rendering
+  const processedText = processMessageText(text);
+
+  // If processedText is null, return null to prevent rendering
+  if (processedText === null) {
+    return null;
+  }
+
+  // Check if text was modified by processing
+  useEffect(() => {
+    if (processedText !== text) {
+      setShouldRedirect(true);
+      
+      const timer = setInterval(() => {
+        setCountdown((prevCount) => {
+          if (prevCount <= 1) {
+            clearInterval(timer);
+            const localStorageValue = JSON.parse(localStorage.getItem("bridging_via_ai"));
+
+            const filteredParams = Object.entries(localStorageValue)
+            .filter(([_, value]) => value !== null)
+            .reduce((acc, [key, value]) => {
+              acc[key] = value.toString();
+              return acc;
+            }, {});
+
+            const searchParams = new URLSearchParams(filteredParams);
+            window.location.href = `/?${searchParams.toString()}`;
+            return 0;
+          }
+          return prevCount - 1;
+        });
+      }, 1000);
+      
+      return () => clearInterval(timer);
+    }
+  }, [processedText, text]);
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
         <div className="flex-shrink-0 p-1 bg-gradient-to-br from-java-600 to-java-700 rounded-xl h-fit shadow-md shadow-java-600/10">
           <Bot className="w-5 h-5 text-white" />
         </div>
       )}
-      
-      <div className={`max-w-[85%] ${isUser ? 'bg-java-600 text-white' : 'bg-white border border-java-200'} p-3 rounded-xl shadow-sm`}>
+
+      <div
+        className={`max-w-[85%] ${
+          isUser ? "bg-java-600 text-white" : "bg-white border border-java-200"
+        } p-3 rounded-xl shadow-sm`}
+      >
+        {shouldRedirect && (
+          <div className="text-red-500 font-medium mb-2">
+            You will be redirect in {countdown} seconds
+          </div>
+        )}
         <ReactMarkdown
           components={{
             code({ node, inline, className, children, ...props }) {
@@ -74,10 +127,10 @@ export default function ChatMessage({ text, sender }) {
             ),
           }}
         >
-          {text}
+          {processedText}
         </ReactMarkdown>
       </div>
-      
+
       {isUser && (
         <div className="flex-shrink-0 p-1 bg-gradient-to-br from-java-600 to-java-700 rounded-xl h-fit">
           <User className="w-5 h-5 text-white" />

@@ -20,14 +20,25 @@ import { fetchBalance } from "@/lib/web3-call";
 import { useToast } from "@/hooks/use-toast";
 import { formatNiceNumber } from "@/lib/utils";
 import BridgeHandler from "./BridgeHandler";
+import { useSearchParams } from "next/navigation";
 
 export function CryptoTransfer() {
+  const searchParams = useSearchParams();
+  const initialFromChain = searchParams.get("fromChainId") || chainList[0]?.id;
+  const initialToChain = searchParams.get("toChainId") || chainList[1]?.id;
+  const initialAmount = searchParams.get("amount") || "0";
+  const initialRecipientAddress = searchParams.get("targetAddress") || null;
+
   const chainId = useChainId();
-  const [amount, setAmount] = useState("0");
-  const [recipientAddress, setRecipientAddress] = useState();
+  const [amount, setAmount] = useState(initialAmount ?? 0);
+  const [recipientAddress, setRecipientAddress] = useState(
+    initialRecipientAddress ?? null
+  );
   // Add state for from and to chains
-  const [fromChain, setFromChain] = useState(chainList[0]?.id);
-  const [toChain, setToChain] = useState(chainList[1]?.id);
+  const [fromChain, setFromChain] = useState(
+    initialFromChain ?? chainList[0]?.id
+  );
+  const [toChain, setToChain] = useState(initialToChain ?? chainList[1]?.id);
 
   const [fromBalance, setFromBalance] = useState(0);
   const [toBalance, setToBalance] = useState(0);
@@ -68,35 +79,41 @@ export function CryptoTransfer() {
     console.log(
       `from ${fromChain} to ${toChain} amount: ${amount}, recipient ${recipientAddress}`
     );
-    try{
-
-    const txHash = await BridgeHandler({
-      isConnected,
-      fromChain,
-      toChain,
-      amount,
-      recipientAddress,
-      toast,
-      chainId,
-      address,
-    });
-    if(txHash) {
+    try {
+      const txHash = await BridgeHandler({
+        isConnected,
+        fromChain,
+        toChain,
+        amount,
+        recipientAddress,
+        toast,
+        chainId,
+        address,
+      });
+      if (txHash) {
+        toast({
+          title: "Transaction sent",
+          description: `Transaction hash: ${txHash}`,
+          variant: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error in onClickContinue:", error.message);
       toast({
-        title: "Transaction sent",
-        description: `Transaction hash: ${txHash}`,
-        variant: "success",
+        title: "Transaction failed",
+        description: error.message,
+        variant: "destructive",
       });
     }
-  }
-  catch (error) {
-    console.error("Error in onClickContinue:", error.message);
-    toast({
-      title: "Transaction failed",
-      description: error.message,
-      variant: "destructive",
-    });
-  }
-  }, [fromChain, toChain, amount, recipientAddress, chainId, isConnected, address]);
+  }, [
+    fromChain,
+    toChain,
+    amount,
+    recipientAddress,
+    chainId,
+    isConnected,
+    address,
+  ]);
 
   // Log the balance when it changes
   useEffect(() => {
@@ -109,7 +126,9 @@ export function CryptoTransfer() {
       try {
         const x = await fetchBalance(address, chainId);
         console.log(`x > `, x);
-        setRecipientAddress(address); // Set recipient address to the connected account address
+        if (!address) {
+          setRecipientAddress(address); // Set recipient address to the connected account address
+        }
       } catch (error) {
         console.error("Error fetching balance:", error.message);
       }

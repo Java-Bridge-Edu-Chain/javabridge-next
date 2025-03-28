@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createAgent } from "./create-agent";
 import { Message, generateId, generateText } from "ai";
 import {rewriteAgent} from './characters';
+import { processMessageText } from "@/lib/utils";
 
 const messages: Message[] = [];
 
@@ -39,6 +40,8 @@ export async function POST(
       ...agent,
       messages,
     });
+
+    // const processedText = processMessageText(text);
 
     const rewrittenText = await rewriteAgent(text);
     // console.log(`do this`);

@@ -1,3 +1,4 @@
+import { bridgeActionProvider } from "@/lib/action-providers/bridge";
 import { mathActionProvider } from "@/lib/action-providers/math";
 import { ragActionProvider } from "@/lib/action-providers/rag";
 import {
@@ -103,6 +104,7 @@ export async function prepareAgentkitAndWalletProvider(): Promise<{
       // erc20ActionProvider(),
       mathActionProvider(),
       ragActionProvider(),
+      bridgeActionProvider(),
     ];
     const canUseCdpApi = process.env.CDP_API_KEY_NAME && process.env.CDP_API_KEY_PRIVATE_KEY;
     if (canUseCdpApi) {

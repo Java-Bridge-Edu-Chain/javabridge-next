@@ -62,7 +62,7 @@ export default function Home() {
         </div>
 
 
-        <Card className="border-amber-700/30 backdrop-blur-md overflow-hidden shadow-lg py-0">
+        <Card className="bg-[#E8D8CC] backdrop-blur-md overflow-hidden shadow-lg py-0">
           <div className="px-6 py-4 border-b border-amber-800/30 flex items-center justify-between bg-gradient-to-r from-amber-800/40 via-amber-900/40 to-amber-800/40">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-amber-800 shadow-inner p-2 border border-amber-500/30">
@@ -70,7 +70,7 @@ export default function Home() {
               </div>
               <div>
                 <h2 className="font-semibold text-java-700">Luwak AI</h2>
-                <p className="text-xs text-amber-800/70">
+                <p className="text-xs text-[#8B5E3C]">
                   Brewing blockchain solutions
                 </p>
               </div>

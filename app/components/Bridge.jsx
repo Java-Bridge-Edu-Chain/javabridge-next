@@ -13,15 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getChainById } from "@/lib/chains";
-import { useAccount, useConnections, useChainId } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import chainList from "@/lib/chains";
 import SelectChain from "@/components/SelectChain";
-import { fetchBalance, connect } from "@/lib/web3-call";
-import { getBridgeContract } from "@/lib/contracts";
-import { parseEther } from "viem";
+import { fetchBalance } from "@/lib/web3-call";
 import { useToast } from "@/hooks/use-toast";
 import { formatNiceNumber } from "@/lib/utils";
+import BridgeHandler from "./BridgeHandler";
 
 export function CryptoTransfer() {
   const chainId = useChainId();
@@ -70,48 +68,35 @@ export function CryptoTransfer() {
     console.log(
       `from ${fromChain} to ${toChain} amount: ${amount}, recipient ${recipientAddress}`
     );
-    if (!isConnected) {
-      toast({
-        title: "Wallet not connected",
-        description: "Please connect your wallet",
-        variant: "destructive",
-      });
-      return;
-    }
-    if (fromChain.toString() != chainId.toString()) {
-      const tgt_chain = getChainById(fromChain);
-      toast({
-        title: "Wrong network",
-        description: `Please switch to ${tgt_chain?.name} network`,
-        variant: "destructive",
-      });
-      return;
-    }
+    try{
 
-    try {
-      const walletClient = await connect({
-        chainId: fromChain,
-      });
-
-      console.log(fromChain, toChain);
-      const contract = await getBridgeContract(fromChain, toChain);
-
-      const hash = await walletClient.writeContract({
-        address: contract.address,
-        abi: contract.abi,
-        functionName: "depositEth",
-        value: parseEther(amount), // Convert to Wei
-        account: address,
-      });
-    } catch (error) {
-      console.error("Error in onClickContinue:", error.message);
+    const txHash = await BridgeHandler({
+      isConnected,
+      fromChain,
+      toChain,
+      amount,
+      recipientAddress,
+      toast,
+      chainId,
+      address,
+    });
+    if(txHash) {
       toast({
-        title: "Transaction failed",
-        description: error.message,
-        variant: "destructive",
+        title: "Transaction sent",
+        description: `Transaction hash: ${txHash}`,
+        variant: "success",
       });
     }
-  }, [fromChain, toChain, amount, recipientAddress, chainId, isConnected]);
+  }
+  catch (error) {
+    console.error("Error in onClickContinue:", error.message);
+    toast({
+      title: "Transaction failed",
+      description: error.message,
+      variant: "destructive",
+    });
+  }
+  }, [fromChain, toChain, amount, recipientAddress, chainId, isConnected, address]);
 
   // Log the balance when it changes
   useEffect(() => {
@@ -302,4 +287,4 @@ const Bridge = () => {
   // </Card></>);
 };
 
-export default CryptoTransfer;
+export default Bridge;

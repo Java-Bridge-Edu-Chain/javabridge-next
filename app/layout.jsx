@@ -9,6 +9,7 @@ import Providers from "./providers";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import meta from "@/lib/meta";
+import MobileMenu from "./components/MobileMenu";
 
 const TopLink = ({href, text}) => {
   return (
@@ -48,7 +49,6 @@ export default function RootLayout({ children }) {
               <Link href="/">
                 <div className="flex items-center gap-1 transition-all duration-300 hover:scale-105">
                   <div className="rounded-full shadow-lg flex items-center justify-center">
-                    {/* <Coffee className="h-8 w-8 text-java-100" /> */}
                     <img
                       className="h-12 w-12 rounded-full shadow-lg"
                       src="/img/logo.png"
@@ -59,6 +59,8 @@ export default function RootLayout({ children }) {
                   </span>
                 </div>
               </Link>
+              
+              {/* Desktop Navigation - Hidden on mobile */}
               <div className="hidden md:flex space-x-1">
                 <TopLink href="/" text="Home" />
                 <TopLink href="/chat" text="Chat" />
@@ -66,6 +68,9 @@ export default function RootLayout({ children }) {
                 <TopLink href="#" text="Docs" />
                 <ConnectButton />
               </div>
+              
+              {/* Mobile Menu - Using the client component */}
+              <MobileMenu />
             </div>
           </header>
           <main className="flex-grow flex justify-center p-4 bg-java-100">
@@ -76,43 +81,6 @@ export default function RootLayout({ children }) {
           {/* Footer with warm wooden texture */}
           <footer className="border-t border-java-800/40 bg-gradient-to-r from-java-900 via-amber-950 to-java-900">
             <div className="container flex flex-col items-center gap-6 py-8 md:flex-row md:justify-between">
-              {/* <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105">
-                <img
-                  className="h-10 w-10 rounded-full shadow-lg"
-                  src="/img/logo.png"
-                />
-                <span className="font-medium text-lg tracking-tight text-java-100">
-                  JavaBridge
-                </span>
-              </div> */}
-
-              {/* <div className="flex gap-6 text-sm text-amber-400">
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline hover:text-amber-200 transition-colors flex items-center gap-1"
-                >
-                  <span>GitHub</span>
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline hover:text-amber-200 transition-colors flex items-center gap-1"
-                >
-                  <span>Documentation</span>
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline hover:text-amber-200 transition-colors flex items-center gap-1"
-                >
-                  <span>Community</span>
-                </a>
-              </div> */}
-
               <div className="text-xs text-amber-200/80">
                 <p className="mt-1">
                   © {new Date().getFullYear()} JavaBridge, Inc.

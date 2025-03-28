@@ -94,13 +94,26 @@ const config = {
         "pulse-gentle": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.8" }
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "25%": { transform: "translateY(-15px) translateX(15px)" },
+          "50%": { transform: "translateY(-25px) translateX(-10px)" },
+          "75%": { transform: "translateY(-10px) translateX(15px)" },
+        },
+        gradientShift: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "steam": "steam 2s ease-out infinite",
-        "pulse-gentle": "pulse-gentle 3s ease-in-out infinite"
+        "pulse-gentle": "pulse-gentle 3s ease-in-out infinite",
+        "float": "float 15s ease-in-out infinite",
+        "spin-slow": "spin 8s linear infinite",
+        "gradient": "gradientShift 8s ease infinite",
       },
     },
   },

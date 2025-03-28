@@ -5,7 +5,20 @@ import Providers from "./providers";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
-import meta from '@/lib/meta'
+import meta from "@/lib/meta";
+
+const TopLink = ({href, text}) => {
+  return (
+    <Link href={href} className="">
+      <Button
+        variant="ghost"
+        className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
+      >
+        {text}
+      </Button>
+    </Link>
+  );
+};
 
 export const metadata = meta;
 /**
@@ -44,19 +57,10 @@ export default function RootLayout({ children }) {
                 </div>
               </Link>
               <div className="hidden md:flex space-x-1">
-                <Button
-                  variant="ghost"
-                  className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
-                >
-                  Docs
-                </Button>
-                <Button
-                  asChild
-                  variant="ghost"
-                  className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
-                >
-                  <Link href="/network">Network</Link>
-                </Button>
+                <TopLink href="/" text="Home" />
+                <TopLink href="/chat" text="Chat" />
+                <TopLink href="/network" text="Network" />
+                <TopLink href="#" text="Docs" />
                 <ConnectButton />
               </div>
             </div>

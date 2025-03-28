@@ -41,7 +41,7 @@ To enhance the AI Agent's knowledge base, follow these steps:
 
 1. **Espresso Knowledge with RAG**:
    - Use a Retrieval-Augmented Generation (RAG) pipeline to fetch and generate responses.
-   - Store espresso-related documents in a vector database (e.g., Pinecone, Weaviate).
+   - Store espresso-related documents in a local files.
    - Implement a retriever to query the database and pass relevant context to the language model.
 
 2. **Crypto Price Fetching with Pyth**:
@@ -52,8 +52,6 @@ To enhance the AI Agent's knowledge base, follow these steps:
 3. **Persona Character**:
    - Define a unique persona for the AI Agent by setting a tone and style in its responses.
    - Use a configuration file or prompt engineering to maintain consistency in the persona's behavior.
-
-By combining these elements, the AI Agent becomes a powerful and engaging tool for users.
 
 ---
 

@@ -1,3 +1,6 @@
+import { Geist } from 'next/font/google';
+const geistSans = Geist({ subsets: ['latin'] });
+
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Button } from "@/components/ui/button";
@@ -30,7 +33,7 @@ export const metadata = meta;
  */
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={geistSans.className}>
       <body
         className="bg-java-100 text-white flex flex-col min-h-screen antialiased"
         style={{

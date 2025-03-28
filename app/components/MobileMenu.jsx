@@ -58,9 +58,9 @@ export default function MobileMenu() {
       
       {/* Mobile Menu - Slides in from the right */}
       <div 
-        className={`fixed top-0 bottom-0 right-0 z-50 w-[85%] max-w-[320px] h-[100vh] bg-gradient-to-b from-java-900 via-java-800 to-java-900 shadow-xl transition-transform duration-300 ease-in-out transform ${
+        className={`md:hidden fixed top-0 bottom-0 right-0 z-50 w-[85%] max-w-[320px] h-[100vh] bg-gradient-to-b from-java-900 via-java-800 to-java-900 shadow-xl transition-transform duration-300 ease-in-out transform ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        } md:hidden`}
+        }`}
         style={{ height: '100vh' }}
       >
         <div className="flex flex-col h-full w-full">

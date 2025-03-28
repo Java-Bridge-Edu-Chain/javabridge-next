@@ -12,7 +12,7 @@ const config = {
   safelist: [
     "from-[#F08A24]", "to-[#E67E22]", "hover:from-[#E67E22]", "hover:to-[#D35400]",
     "from-[#F08A24]/50", "to-[#E67E22]/50", "from-[#F08A24]", "to-[#E67E22]",
-    "from-[#D9BEA7]", "to-[#CAAF9B]"
+    "from-[#D9BEA7]", "to-[#CAAF9B]", "md:hidden",
   ],
   prefix: "",
   theme: {

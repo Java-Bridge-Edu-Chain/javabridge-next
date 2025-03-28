@@ -6,8 +6,7 @@ export const BridgeActionSchema = z.object({
   fromChainId: z.string().or(z.number()).describe("Source chain ID. default is Arbitrum Sepolia"),
   toChainId: z.string().or(z.number()).describe("Destination chain ID"),
   amount: z.string().describe("Amount to bridge"),
-  targetAddress: z.string().nullable().default(null).describe(`Target wallet address, the address starts with 0x example(0x5725428F8AfF51289ddB0C7b477a74BaF3E99C59). 
-    if not provided or wrong format, use null instead.`),
+  targetAddress: z.string().nullable().default(null).describe(`Target wallet address, the address starts with 0x... if the user doesn't provide it or wrong, use the default address (null).`),
 });
 
 let supportedChains: string="";

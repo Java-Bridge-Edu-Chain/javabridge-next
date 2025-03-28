@@ -52,6 +52,26 @@ export default function ChatMessage({ text, sender }) {
                 </code>
               );
             },
+            a: (props) => (
+              <a
+                {...props}
+                className="text-java-600 underline hover:text-java-400 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            ),
+            code: (props) => (
+              <code
+                {...props}
+                className="bg-amber-950/50 p-1 rounded text-amber-200 text-sm"
+              />
+            ),
+            ul: (props) => (
+              <ul {...props} className="list-disc pl-5 my-3 space-y-1" />
+            ),
+            ol: (props) => (
+              <ol {...props} className="list-decimal pl-5 my-3 space-y-1" />
+            ),
           }}
         >
           {text}

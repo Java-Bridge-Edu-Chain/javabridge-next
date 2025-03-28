@@ -106,7 +106,7 @@ export default function Chain() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-white">
+    <div className="flex flex-col items-center w-full min-h-screen ">
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-java-100 rounded-full filter blur-3xl opacity-30" />

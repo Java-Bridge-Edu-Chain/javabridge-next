@@ -1,101 +1,68 @@
 "use client";
 
-import { Sparkles, User } from "lucide-react";
+import { User, Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const ChatMessage = ({ text, sender }) => {
+export default function ChatMessage({ text, sender }) {
   const isUser = sender === "user";
 
   return (
-    <div
-      className={`flex items-start gap-4 ${isUser ? "flex-row-reverse" : ""}`}
-    >
-      {/* Avatar with animated effects */}
-      <div
-        className={`relative flex-shrink-0 ${
-          isUser
-            ? "bg-gradient-to-br from-java-500 to-java-700"
-            : "bg-gradient-to-br from-amber-500 to-amber-700"
-        } w-10 h-10 rounded-full shadow-md overflow-hidden flex items-center justify-center border-2 ${
-          isUser ? "border-java-400" : "border-amber-400"
-        }`}
-      >
-        {isUser ? (
-          <User className="w-5 h-5 text-white" />
-        ) : (
-          <>
-            <Sparkles className="w-5 h-5 text-white" />
-            {/* Animated glow effect */}
-            <div className="absolute inset-0 bg-amber-400/20 rounded-full animate-pulse-gentle"></div>
-          </>
-        )}
-      </div>
-
-      {/* Message bubble with sophisticated styling */}
-      <div
-        className={`relative group max-w-[80%] ${
-          isUser
-            ? "bg-gradient-to-r from-java-100 to-java-200"
-            : "bg-gradient-to-r from-amber-50 to-amber-100"
-        } rounded-2xl p-4 shadow-sm ${
-          isUser ? "rounded-tr-sm" : "rounded-tl-sm"
-        }`}
-      >
-        <div className="relative">
-          {/* Inner glow effect */}
-          <div className="absolute inset-0 rounded-2xl bg-white/40 opacity-0 transition-opacity duration-300"></div>
-
-          {/* Text content with proper styling */}
-          {isUser && (
-            <div className={`relative text-java-900`}>
-              <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">
-                {text}
-              </p>
-            </div>
-          )}
-          {!isUser && (
-            <div className={`relative text-amber-900 text-sm md:text-base leading-relaxed`}>
-              <ReactMarkdown
-                components={{
-                  a: (props) => (
-                    <a
-                      {...props}
-                      className="text-java-900 underline hover:text-java-800 transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  ),
-                  code: (props) => (
-                    <code
-                      {...props}
-                      className="bg-amber-950/50 p-1 rounded text-amber-200 text-sm"
-                    />
-                  ),
-                  ul: (props) => (
-                    <ul {...props} className="list-disc pl-5 my-3 space-y-1" />
-                  ),
-                  ol: (props) => (
-                    <ol {...props} className="list-decimal pl-5 my-3 space-y-1" />
-                  ),
-                }}
-              >
-                {text}
-              </ReactMarkdown>
-            </div>
-          )}
+    <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}>
+      {!isUser && (
+        <div className="flex-shrink-0 p-1 bg-gradient-to-br from-java-600 to-java-700 rounded-xl h-fit shadow-md shadow-java-600/10">
+          <Bot className="w-5 h-5 text-white" />
         </div>
-
-        {/* Bottom subtle gradient line */}
-        <div
-          className={`absolute bottom-0 left-0 right-0 h-[2px] rounded-full ${
-            isUser
-              ? "bg-gradient-to-r from-transparent via-java-400/30 to-transparent"
-              : "bg-gradient-to-r from-transparent via-amber-400/30 to-transparent"
-          }`}
-        ></div>
+      )}
+      
+      <div className={`max-w-[85%] ${isUser ? 'bg-java-600 text-white' : 'bg-white border border-java-200'} p-3 rounded-xl shadow-sm`}>
+        <ReactMarkdown
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <div className="rounded-md overflow-hidden my-2 border border-java-800/10 bg-java-900/5">
+                  <div className="bg-java-800/10 text-java-700 text-xs px-3 py-1 flex items-center justify-between">
+                    <span>{match[1]}</span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(children);
+                      }}
+                      className="text-java-600 hover:text-java-800 transition-colors"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <SyntaxHighlighter
+                    style={vscDarkPlus}
+                    language={match[1]}
+                    PreTag="div"
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, "")}
+                  </SyntaxHighlighter>
+                </div>
+              ) : (
+                <code
+                  className={`${className} px-1 py-0.5 bg-java-100 text-java-800 rounded text-sm`}
+                  {...props}
+                >
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {text}
+        </ReactMarkdown>
       </div>
+      
+      {isUser && (
+        <div className="flex-shrink-0 p-1 bg-gradient-to-br from-java-600 to-java-700 rounded-xl h-fit">
+          <User className="w-5 h-5 text-white" />
+        </div>
+      )}
     </div>
   );
-};
-
-export default ChatMessage;
+}

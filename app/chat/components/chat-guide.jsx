@@ -34,18 +34,15 @@ const ChatGuide = ({ setInput, sendMessage }) => {
   return (
     <div className="space-y-6">
       {/* Welcome message with decorative elements */}
-      <div className="bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 rounded-2xl p-6 shadow-lg relative overflow-hidden">
-        {/* Decorative bubbles */}
-        <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-java-400/10 blur-lg"></div>
-        <div className="absolute -left-4 -bottom-4 w-20 h-20 rounded-full bg-amber-400/10 blur-lg"></div>
+      <div className="bg-gradient-to-br from-white to-java-50 border border-java-200 rounded-2xl p-6 shadow-lg relative overflow-hidden">
         
         <div className="flex items-start gap-4 relative z-10">
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/30 p-2 border-2 border-amber-400/50">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-java-500 to-java-600 shadow-lg shadow-java-500/30 p-2 border-2 border-java-400/50">
             <Bot className="w-6 h-6 text-white" />
           </div>
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-java-800 flex items-center gap-2">
-              Welcome to JavaBridge <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
+              Welcome to JavaBridge <Sparkles className="w-5 h-5 text-java-500 animate-pulse" />
             </h3>
             <p className="text-java-700 leading-relaxed">
               I'm your virtual assistant for all things related to JavaBridge. 

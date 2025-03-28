@@ -107,42 +107,37 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <Card className="relative bg-gradient-to-br from-[#F4EBE2] via-[#E8D8CC] to-[#F0E5DB] backdrop-blur-md overflow-hidden shadow-2xl py-0 border-amber-200 rounded-xl">
+          <Card className="relative bg-gradient-to-br from-white backdrop-blur-md overflow-hidden shadow-2xl py-0 border-java-200 rounded-xl">
             {/* Decorative card elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -right-20 top-20 w-60 h-60 rounded-full bg-amber-500/5 blur-3xl"></div>
+              <div className="absolute -right-20 top-20 w-60 h-60 rounded-full bg-java-500/5 blur-3xl"></div>
               <div className="absolute -left-10 bottom-20 w-40 h-40 rounded-full bg-java-500/5 blur-3xl"></div>
-              <div className="absolute right-1/4 bottom-10 w-20 h-20 rounded-full bg-orange-500/5 blur-2xl"></div>
+              <div className="absolute right-1/4 bottom-10 w-20 h-20 rounded-full bg-java-400/5 blur-2xl"></div>
             </div>
 
             {/* Enhanced header */}
-            <div className="px-6 py-4 border-b border-amber-800/20 flex items-center justify-between bg-gradient-to-r from-amber-800/30 via-amber-700/30 to-amber-800/30 relative overflow-hidden">
+            <div className="px-6 py-4 border-b border-java-800/20 flex items-center justify-between bg-gradient-to-r from-java-800 via-java-700 to-java-800 relative overflow-hidden">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 shadow-lg shadow-amber-700/30 p-2.5 border border-amber-400/50 hover:scale-105 transition-transform duration-300">
-                  <Coffee className="w-6 h-6 text-amber-50 drop-shadow-md" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-java-500 to-java-700 shadow-lg shadow-java-700/30 p-2.5 border border-java-400/50 hover:scale-105 transition-transform duration-300">
+                  <Coffee className="w-6 h-6 text-java-50 drop-shadow-md" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-xl text-java-800 tracking-tight">Luwak AI</h2>
+                  <h2 className="font-bold text-xl text-white tracking-tight">Luwak AI</h2>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <p className="text-sm text-[#8B5E3C]">Brewing blockchain solutions</p>
+                    <p className="text-sm text-java-200/80">Brewing blockchain solutions</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-amber-700/70" />
-                <Stars className="w-5 h-5 text-amber-700/70" />
-              </div>
-              
               {/* Decorative lines in header */}
-              <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+              <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-java-500/50 to-transparent"></div>
             </div>
 
             {/* Chat messages with improved styling */}
             <div className="relative">
               <div className="absolute inset-0 pointer-events-none opacity-20">
-                <div className="absolute -right-20 top-10 w-60 h-60 rounded-full bg-amber-500/30 blur-3xl"></div>
+                <div className="absolute -right-20 top-10 w-60 h-60 rounded-full bg-java-500/30 blur-3xl"></div>
                 <div className="absolute -left-20 bottom-10 w-60 h-60 rounded-full bg-java-500/20 blur-3xl"></div>
               </div>
 
@@ -192,7 +187,7 @@ export default function Home() {
 
             {/* Input Box with enhanced styling */}
             <div className="relative">
-              <div className="absolute -top-10 left-0 right-0 h-20 bg-gradient-to-t from-[#E8D8CC] to-transparent pointer-events-none"></div>
+              <div className="absolute -top-10 left-0 right-0 h-20 bg-gradient-to-t from-[#E5F1F1] to-transparent pointer-events-none"></div>
               <ChatInput
                 input={input}
                 setInput={setInput}

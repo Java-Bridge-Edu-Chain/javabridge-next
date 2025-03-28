@@ -10,18 +10,18 @@ import {
 const ChatGuide = ({ setInput, sendMessage }) => {
   const suggestions = [
     {
-      title: "What is JavaBridge?",
-      description: "Learn about the core features of JavaBridge",
+      title: "What is Espresso?",
+      description: "Learn about the core features of Espresso",
       icon: <Database className="w-5 h-5 text-java-600" />,
     },
     {
-      title: "How secure is JavaBridge?",
-      description: "Understand our security architecture",
+      title: "How to run espresso node?",
+      description: "Get started with running an espresso node",
       icon: <Code className="w-5 h-5 text-java-600" />,
     },
     {
-      title: "Bridge assets example",
-      description: "See how to bridge assets between chains",
+      title: "What is Hotshot?",
+      description: "Discover the features of HotShot",
       icon: <MessageSquareMore className="w-5 h-5 text-java-600" />,
     },
   ];
@@ -69,7 +69,7 @@ const ChatGuide = ({ setInput, sendMessage }) => {
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-java-100 group-hover:bg-java-200 transition-colors duration-300">
                 {suggestion.icon}
               </div>
-              <h4 className="font-semibold text-java-800 text-lg">{suggestion.title}</h4>
+              <h4 className="font-semibold text-java-800 text-left text-lg">{suggestion.title}</h4>
             </div>
             
             <p className="text-sm text-java-600 mb-4">{suggestion.description}</p>

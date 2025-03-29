@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { Sparkles, Stars, Zap, Coffee } from "lucide-react";
 import Bridge from "./components/Bridge";
 
 /**
@@ -15,19 +15,26 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <div className="relative w-full max-w-4xl">
-        {/* Hero section with animation */}
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-3 p-1.5 px-3 rounded-full bg-java-500 border border-java-700/30 text-java-200 mb-4 shadow-inner">
-            <Sparkles className="w-4 h-4" color="white" />
-            <span className="text-xs font-medium text-white">
-              Bridging assets between chains elegantly
+
+        <div className="flex flex-col items-center justify-center w-full ">
+          <div className="relative inline-flex items-center gap-3 p-2 px-6 rounded-full bg-gradient-to-r from-java-500 to-java-600 border border-java-700/30 text-java-50 mb-6 shadow-lg shadow-java-500/20 transform hover:scale-105 transition-transform">
+            <Sparkles className="w-5 h-5 animate-pulse" color="white" />
+            <span className="text-sm font-medium text-white">
+              The Fast Lane to Rollups with Espresso ☕
             </span>
           </div>
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-java-400 via-java-600 to-java-800 mb-3">
-            <span className="animate-gradient">JavaBridge</span>
+
+          <h1 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-java-400 via-java-600 to-java-800 mb-4 drop-shadow-sm">
+            <span className="animate-gradient relative text-java-500">
+              Java Bridge
+              <div className="absolute -top-1 -right-4 w-6 h-6 text-java-400">
+                <Zap className="w-6 h-6 animate-pulse" />
+              </div>
+            </span>
           </h1>
-          <p className="text-java-600 max-w-xl mx-auto">
-            A powerful Ethereum Roll Up for seamless cross-chain asset bridging
+
+          <p className="text-java-700 max-w-xl mx-auto text-lg text-center mb-6 leading-relaxed">
+            Delivers <strong>blazing-fast</strong> transfers from chains to rollups using <strong>Espresso</strong>, a next-gen hybrid Zero-Knowledge & Optimistic Rollup.
           </p>
         </div>
 

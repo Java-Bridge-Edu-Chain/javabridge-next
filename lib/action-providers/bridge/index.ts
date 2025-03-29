@@ -6,7 +6,12 @@ export const BridgeActionSchema = z.object({
   fromChainId: z.string().or(z.number()).describe("Source chain ID. default is Arbitrum Sepolia"),
   toChainId: z.string().or(z.number()).describe("Destination chain ID"),
   amount: z.string().describe("Amount to bridge"),
-  targetAddress: z.string().nullable().default(null).describe(`Target wallet address, use default address (null) if its empty.`),
+  targetAddress: z
+    .string()
+    .regex(/^0x\w+$/, "Target address must start with '0x' followed by alphanumeric characters.")
+    .nullable()
+    .default(null)
+    .describe(`Target wallet address, use default address (null) if its empty.`),
 });
 
 let supportedChains: string="";

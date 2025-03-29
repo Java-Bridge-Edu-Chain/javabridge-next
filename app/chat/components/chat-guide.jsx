@@ -1,10 +1,10 @@
 import {
-  Bot,
   Sparkles,
   ArrowRight,
   MessageSquareMore,
   Database,
   Code,
+  Coffee
 } from "lucide-react";
 
 const ChatGuide = ({ setInput, sendMessage }) => {
@@ -26,9 +26,10 @@ const ChatGuide = ({ setInput, sendMessage }) => {
     },
   ];
 
-  const handleSuggestionClick = (suggestion) => {
+  const handleSuggestionClick = async (suggestion) => {
     setInput(suggestion);
-    sendMessage(suggestion);
+    await sendMessage(suggestion);
+    setInput("");
   };
 
   return (
@@ -38,16 +39,14 @@ const ChatGuide = ({ setInput, sendMessage }) => {
         
         <div className="flex items-start gap-4 relative z-10">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-java-500 to-java-600 shadow-lg shadow-java-500/30 p-2 border-2 border-java-400/50">
-            <Bot className="w-6 h-6 text-white" />
+            <Coffee className="w-6 h-6 text-white" />
           </div>
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-java-800 flex items-center gap-2">
-              Welcome to JavaBridge <Sparkles className="w-5 h-5 text-java-500 animate-pulse" />
+            Meet Luwak AI: The Ultimate Espresso-Powered Bridge Assistant  <Sparkles className="w-5 h-5 text-java-500 animate-pulse" />
             </h3>
             <p className="text-java-700 leading-relaxed">
-              I'm your virtual assistant for all things related to JavaBridge. 
-              Ask me anything about bridging assets across chains, security features, or 
-              how to integrate with your project.
+            Luwak AI is your 24/7 on-chain expert, built to make bridging on Java Bridge seamless, secure, and lightning-fast. Whether you're a developer, trader, or blockchain enthusiast, Luwak AI puts the power of Espresso at your fingertips.
             </p>
           </div>
         </div>

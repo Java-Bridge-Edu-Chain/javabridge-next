@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Bot } from "lucide-react";
+import { User, Bot, Coffee } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -56,7 +56,7 @@ export default function ChatMessage({ text, sender }) {
     <div className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
         <div className="flex-shrink-0 p-1 bg-gradient-to-br from-java-600 to-java-700 rounded-xl h-fit shadow-md shadow-java-600/10">
-          <Bot className="w-5 h-5 text-white" />
+          <Coffee className="w-5 h-5 text-white" />
         </div>
       )}
 

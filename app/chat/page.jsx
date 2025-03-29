@@ -66,14 +66,14 @@ export default function Home() {
           <div className="relative inline-flex items-center gap-3 p-2 px-6 rounded-full bg-gradient-to-r from-java-500 to-java-600 border border-java-700/30 text-java-50 mb-6 shadow-lg shadow-java-500/20 transform hover:scale-105 transition-transform">
             <Sparkles className="w-5 h-5 animate-pulse" color="white" />
             <span className="text-sm font-medium text-white">
-              Bridging assets between chains elegantly
+              The Ultimate Espresso-Powered Bridge Assistant ☕
             </span>
             <Stars className="w-4 h-4 text-java-100 animate-spin-slow" />
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-java-400 via-java-600 to-java-800 mb-4 drop-shadow-sm">
             <span className="animate-gradient relative text-java-500">
-              JavaBridge
+              Luwak AI
               <div className="absolute -top-1 -right-4 w-6 h-6 text-java-400">
                 <Zap className="w-6 h-6 animate-pulse" />
               </div>
@@ -81,8 +81,7 @@ export default function Home() {
           </h1>
           
           <p className="text-java-700 max-w-xl mx-auto text-lg mb-6 leading-relaxed">
-            A powerful Ethereum Roll Up for seamless cross-chain asset bridging,
-            <br />designed for the modern blockchain ecosystem
+          <strong>Luwak AI</strong> makes bridging on <strong>Java Bridge</strong> seamless, secure, and lightning-fast—your 24/7 on-chain expert powered by <strong>Espresso</strong>
           </p>
           
           {/* <div className="hidden md:flex justify-center gap-5 mb-4">
@@ -125,7 +124,7 @@ export default function Home() {
                   <h2 className="font-bold text-xl text-white tracking-tight">Luwak AI</h2>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <p className="text-sm text-java-200/80">Brewing blockchain solutions</p>
+                    <p className="text-sm text-java-200/80">Brewing espresso solutions</p>
                   </div>
                 </div>
               </div>

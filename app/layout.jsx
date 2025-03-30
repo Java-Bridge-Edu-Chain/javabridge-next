@@ -11,9 +11,9 @@ import Link from "next/link";
 import meta from "@/lib/meta";
 import MobileMenu from "./components/MobileMenu";
 
-const TopLink = ({href, text}) => {
+const TopLink = ({href, text, target='_self'}) => {
   return (
-    <Link href={href} className="">
+    <Link href={href} className="" target={target}>
       <Button
         variant="ghost"
         className="text-java-100 hover:text-java-50 hover:bg-java-800/60"
@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
                 <TopLink href="/" text="Home" />
                 <TopLink href="/chat" text="Chat" />
                 <TopLink href="/network" text="Network" />
-                <TopLink href="#" text="Docs" />
+                <TopLink href="https://java-bridge.gitbook.io/docs" target='_blank' text="Docs" />
                 <ConnectButton />
               </div>
               

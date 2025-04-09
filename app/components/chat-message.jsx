@@ -41,7 +41,7 @@ export default function ChatMessage({ text, sender }) {
             }, {});
 
             const searchParams = new URLSearchParams(filteredParams);
-            window.location.href = `/?${searchParams.toString()}`;
+            window.location.href = `/bridge?${searchParams.toString()}`;
             return 0;
           }
           return prevCount - 1;

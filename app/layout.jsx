@@ -63,7 +63,7 @@ export default function RootLayout({ children }) {
               {/* Desktop Navigation - Hidden on mobile */}
               <div className="hidden md:flex space-x-1">
                 <TopLink href="/" text="Home" />
-                <TopLink href="/chat" text="Chat" />
+                <TopLink href="/bridge" text="Bridge" />
                 <TopLink href="/network" text="Network" />
                 {/* <TopLink href="https://java-bridge.gitbook.io/docs" target='_blank' text="Docs" /> */}
                 <ConnectButton />

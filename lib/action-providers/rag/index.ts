@@ -46,17 +46,16 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
 
     @CreateAction({
         name: "rag-search",
-        description: `Search for relevant documents based on a query. if user ask for crypto project like Edu Chain, Open Campus,
-        Arbitrum Orbit, Codex RPC Node, Open Campus ID, Faucet, Smart Contract, Gelato, Zero Dev, Layer Zero, Oracle, DIA, Relay,
-        Wallet, Wallet as a Service, Privy, Web3Auth, SailFish, MoveFlow, Blend, Camelot, GainzSwap, ThrustPad, EduScan, Grasp Academy, EduHub, EduGPT, Daily Wiser, TinyTap, Pody Network, Proof of Learn
-
-         execute this function first.`,
+        description: `Retrieves relevant documents and glossary entries to support answers about crypto, blockchain, or Web3.
+Use this when the user asks about related projects, tools, or terms such as: Edu Chain, Faucet, Deploy, Smart Contract, Open Campus, Arbitrum Orbit, Codex RPC Node, Faucet, Smart Contract, Gelato, Zero Dev, LayerZero, Oracle, DIA, Wallet, Wallet as a Service, Privy, Web3Auth, SailFish, MoveFlow, Blend, Camelot, GainzSwap, ThrustPad, EduScan, Grasp Academy, EduHub, EduGPT, Daily Wiser, TinyTap, Pody Network, Proof of Learn.
+Also covers terms like: GM, DAA, DAO, DeFi, EIP, EVM, GRC-20, ICO, IEO, KYC, NPoS, NGMI, NFT, OCID, PPLNS, PoW, PoS, TGE, EAS, ZK, zkML.
+Has its own internal glossary and should be used to enhance responses with accurate definitions and context.`,
         schema: RagSearchSchema,
     })
     async search(args: z.infer<typeof RagSearchSchema>): Promise<SearchResponse> {
         const { query, total } = args;
 
-        console.log(`RAG search query: ${query}`);
+        console.log(`>>> RAG search query: ${query}`);
         
         try {
             // Load the knowledge base

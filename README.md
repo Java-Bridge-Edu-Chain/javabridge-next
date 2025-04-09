@@ -1,7 +1,11 @@
-# Java Bridge: Next-Gen Cross-Chain Platform
+![Luwak AI Banner](/public/img/jb-banner.jpg)
 
-## Overview
-Java Bridge is a cutting-edge Next.js application that enables seamless bridging of Ethereum (ETH) across various rollup chains. Powered by Luwak AI, our platform combines advanced blockchain technology with an intuitive user experience.
+# Java Bridge: Cross-Chain Brilliance Powered by Luwak AI ☕🦝
+
+## Overview  
+**Java Bridge** is a next-gen cross-chain platform built with **Next.js**, enabling seamless and secure ETH bridging across multiple rollup chains. At its core is **Luwak AI**, your intelligent assistant for everything EduChain—combining blockchain expertise with an engaging user experience.
+
+---
 
 ## Supported Chains
 
@@ -13,164 +17,104 @@ Java Bridge is a cutting-edge Next.js application that enables seamless bridging
 
 ---
 
-## Luwak AI: Your Cyberpunk Raccoon Assistant
+## ☕ Meet Luwak AI: Your On-Chain Crypto Assistant
 
-Luwak AI is our integrated AI assistant that enhances your bridging experience with a unique cyberpunk raccoon persona. Powered by OpenAI's o1-mini model, this next-gen AI combines deep blockchain knowledge with engaging interactions.
+**Luwak AI** is your 24/7 AI-powered guide to the EduChain ecosystem. Whether you're new to Web3 or a seasoned dev, Luwak AI delivers instant answers, bridging support, real-time data, and protocol guidance—all with a cyberpunk raccoon twist.
 
-![Luwak AI](/public/img/luwak-banner.png)
+### 🧠 *Core Capabilities:*
 
-### Key Capabilities
+- 📚 *EduChain Documentation* – Get instant, accurate answers from the official EduChain docs.  
+  → No more digging—Luwak brings the docs to you.
 
-#### 🔍 Espresso Technology Expert
-Luwak AI leverages Retrieval-Augmented Generation (RAG) to provide in-depth knowledge about Espresso's Zero-Knowledge and Optimistic Rollup technologies:
-- Comprehensive understanding of Espresso architecture and protocols
-- Technical guidance on node operation and network integration
-- Support for developers building on Espresso
+- 🧩 *EduChain Ecosystem Guide* – Explore protocols, tools, and projects within the EduChain universe.  
+  → Discover what's possible, from rollups to dApps.
 
-#### 💹 Real-Time Market Intelligence
-Stay informed with live cryptocurrency prices through the Pyth Price Feeds API:
-- Up-to-the-minute price data for informed decision-making
-- Market trends and cross-chain opportunities
-- Price comparison across supported rollup chains
+- 📖 *Crypto Glossary* – Understand complex blockchain terms with simple explanations.  
+  → Jargon-free learning for devs and curious minds alike.
 
-#### 🌉 Streamlined Bridge Execution
-Luwak AI simplifies the bridging process:
-- Direct user interaction without unnecessary intermediary steps
-- Step-by-step guidance through the bridging process
-- Transaction confirmations and status updates
+- 🔁 *Chat-Based Asset Bridging* – Move assets across chains directly through chat—fast, secure, and user-friendly.  
+  → One chat, one command—done.
 
-#### 🦝 Cyberpunk Raccoon Persona
-Interact with a character that makes blockchain fun:
-- Unique personality powered by OpenAI's Model Context Protocol
-- Engaging conversational style with cyberpunk flair
-- Technical expertise delivered with attitude
+- 💸 *Live Coin Prices* – Track real-time market prices and make smarter decisions.  
+  → Get live data with zero delay, right when you need it.
 
-### Technology Stack
-
-Luwak AI's architecture combines several advanced technologies:
-
-1. **RAG for Knowledge Processing**:
-   - Local storage of comprehensive Espresso documentation
-   - Vector-based search for rapid information retrieval
-   - Context-aware response generation
-
-2. **Pyth Network Integration**:
-   - Real-time price feeds from decentralized oracles
-   - Secure API implementation
-   - Cross-chain price data visualization
-
-3. **OpenAI 4o-mini Model**:
-   - High-performance language processing
-   - Custom prompt engineering for persona development
-   - Efficient context management for detailed responses
+- 🤖 *Custom Persona* – Luwak responds in a helpful, engaging tone—tailored for both devs and newcomers.  
+  → A smart assistant that speaks your language.
 
 ---
 
-## Getting Started
+## 🛠️ Technology Stack
 
-### Prerequisites
-- Node.js (v18+) and npm installed
-- MetaMask or compatible Web3 wallet
-- Test ETH on supported networks
-
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/javabridge-nextjs.git
-   ```
-
-2. Navigate to the project directory:
-   ```bash
-   cd javabridge-nextjs
-   ```
-
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-4. Set up environment variables:
-   ```bash
-   cp env-example .env.local
-   # Edit .env.local with your API keys and configuration
-   ```
-
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-6. Access the application at `http://localhost:3000`
+- **RAG (Retrieval-Augmented Generation)**: Custom knowledge base powered by local PDF ingestion & vector search  
+- **OpenAI o1-mini**: Custom prompt-engineered AI for crypto conversations  
+- **Pyth Network**: Secure, live price feeds across multiple chains  
+- **Next.js & Tailwind**: Lightning-fast UI/UX frontend
 
 ---
 
-## Usage Guide
+## 🚀 Getting Started
 
-### Bridging Assets
-1. Connect your wallet using the "Connect" button
-2. Select source and destination chains from the dropdown menus
-3. Enter the amount of ETH to bridge
-4. Click "Bridge" and confirm the transaction in your wallet
-5. Monitor transaction status in real-time
+### Prerequisites  
+- Node.js (v18+)  
+- MetaMask or other Web3 wallet  
+- Test ETH on supported chains
 
-### Interacting with Luwak AI
-- Click the menu "Chat" in the navbar
-- Ask questions about Espresso technology, bridges, or current prices
-- Receive guidance throughout your bridging process
-- Experience the unique cyberpunk raccoon persona
+### Setup Steps  
+```bash
+git clone https://github.com/your-username/javabridge-nextjs.git
+cd javabridge-nextjs
+npm install
+cp env-example .env.local  # Configure your API keys
+npm run dev
+```
 
----
-
-## For Developers
-
-### How to Give Knowledge to Luwak AI Agent
-
-Luwak AI uses a Retrieval-Augmented Generation (RAG) system to access and process information. You can easily expand its knowledge base by following these steps:
-
-1. **Prepare Documentation Files**:
-   - Convert your documentation to PDF format
-   - Place the PDF files in the `embedding_docs/input/` directory
-
-2. **Process the Files**:
-   - Run the application locally:
-     ```bash
-     yarn dev
-     ```
-   - Or in production:
-     ```bash
-     yarn build && yarn start
-     ```
-
-3. **Generate Embeddings**:
-   - Access the embedding creation endpoint:
-     ```
-     http://localhost:3000/api/embedding/create
-     ```
-   - The system will automatically:
-     - Convert PDFs to text files (stored in `embedding_docs/output/`)
-     - Create vector embeddings from the text
-     - Store these embeddings in the database for AI retrieval
-
-4. **Verification**:
-   - Check the terminal output for processing status
-   - Test the AI with questions related to your new content
-   - The knowledge is now available for Luwak AI to use in responses
-
-> **Note**: The embedding process may take several minutes depending on the size and number of documents being processed.
-
-### Custom Configurations
-- Modify chain configurations in `/lib/chains.js`
-- Adjust Luwak AI's persona settings in `/app/api/agent/characters.js`
-- Extend supported tokens in `/lib/contracts.js`
+> Access the app at `http://localhost:3000`
 
 ---
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## 🔧 Usage Guide
+
+### How to Bridge  
+1. Connect your wallet  
+2. Choose source/destination chains  
+3. Enter ETH amount  
+4. Hit "Bridge" and confirm  
+5. Monitor transaction in real time
+
+### Chat with Luwak AI  
+- Open the "Chat" menu  
+- Ask questions about EduChain, bridging, or crypto concepts  
+- Get fast answers and actionable steps  
+- Enjoy the cyberpunk raccoon vibes
 
 ---
 
-## Acknowledgements
-- [Espresso Systems](https://www.espressosys.com/) for their innovative rollup technology
-- [Pyth Network](https://pyth.network/) for real-time price oracle data
-- OpenAI for their advanced language models
+## 🧪 Developer Mode: Expand Luwak’s Knowledge
+
+### Add New Docs  
+1. Drop PDFs into `embedding_docs/input/`  
+2. Run the app locally or build for production  
+3. Visit:  
+   ```
+   http://localhost:3000/api/embedding/create
+   ```  
+4. Verify in terminal, test your queries—Luwak now knows your docs
+
+> Embedding may take time depending on doc size.
+
+### Dev Customizations  
+- Supported chains → `/lib/chains.js`  
+- Token configs → `/lib/contracts.js`  
+- Luwak’s persona → `/app/api/agent/characters.js`
+
+---
+
+## 📄 License  
+MIT License – see [LICENSE](LICENSE) for full details.
+
+---
+
+## 🙏 Acknowledgements  
+- [Edu Chain](https://educhain.xyz/) – A Layer 3 blockchain for consumer-facing education apps
+- [Pyth Network](https://pyth.network/) – decentralized price oracle feeds  
+- [OpenAI](https://openai.com) – powering Luwak’s brain  

@@ -1,28 +1,28 @@
 import {
   Sparkles,
   ArrowRight,
-  MessageSquareMore,
+  CircleHelp,
   Database,
-  Code,
-  Coffee
+  Coffee,
+  DollarSign
 } from "lucide-react";
 
 const ChatGuide = ({ setInput, sendMessage }) => {
   const suggestions = [
     {
-      title: "What is Espresso?",
-      description: "Learn about the core features of Espresso",
+      title: "What is Edu Chain?",
+      description: "Learn about Edu Chain technology",
       icon: <Database className="w-5 h-5 text-java-600" />,
     },
     {
-      title: "How to run espresso node?",
-      description: "Get started with running an espresso node",
-      icon: <Code className="w-5 h-5 text-java-600" />,
+      title: "What is OCID?",
+      description: "Understand blockchain terms",
+      icon: <CircleHelp className="w-5 h-5 text-java-600" />,
     },
     {
-      title: "What is Hotshot?",
-      description: "Discover the features of HotShot",
-      icon: <MessageSquareMore className="w-5 h-5 text-java-600" />,
+      title: "EDU coin price?",
+      description: "Track real-time market prices",
+      icon: <DollarSign className="w-5 h-5 text-java-600" />,
     },
   ];
 
@@ -43,10 +43,10 @@ const ChatGuide = ({ setInput, sendMessage }) => {
           </div>
           <div className="space-y-2">
             <h3 className="text-xl font-bold text-java-800 flex items-center gap-2">
-            Meet Luwak AI: The Ultimate Espresso-Powered Bridge Assistant  <Sparkles className="w-5 h-5 text-java-500 animate-pulse" />
+            Meet Luwak AI: Your Espresso-Powered Guide to the EduChain Universe <Sparkles className="w-5 h-5 text-java-500 animate-pulse" />
             </h3>
             <p className="text-java-700 leading-relaxed">
-            Luwak AI is your 24/7 on-chain expert, built to make bridging on Java Bridge seamless, secure, and lightning-fast. Whether you're a developer, trader, or blockchain enthusiast, Luwak AI puts the power of Espresso at your fingertips.
+            Luwak AI is your always-on assistant for everything EduChain and crypto. Whether you're exploring Web3 for the first time or building in the EduChain ecosystem, Luwak helps you bridge assets, understand protocols, and master blockchain—all from one intuitive chat. Fueled by espresso. Optimized for clarity.
             </p>
           </div>
         </div>

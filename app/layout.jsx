@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
                 <TopLink href="/" text="Home" />
                 <TopLink href="/chat" text="Chat" />
                 <TopLink href="/network" text="Network" />
-                <TopLink href="https://java-bridge.gitbook.io/docs" target='_blank' text="Docs" />
+                {/* <TopLink href="https://java-bridge.gitbook.io/docs" target='_blank' text="Docs" /> */}
                 <ConnectButton />
               </div>
               

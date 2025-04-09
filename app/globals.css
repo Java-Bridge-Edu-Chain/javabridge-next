@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; */
+  font-family:'Geist', 'Geist Fallback', sans-serif;
 }
 
 @layer base {
@@ -107,4 +108,28 @@ body {
 
 .float-bean {
   animation: float 6s ease-in-out infinite;
+}
+
+/* Gradient animation for text heading */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
+}
+
+/* Rainbowkit Override */
+
+[data-rk]{
+  --rk-colors-accentColor: #ec8c2b !important;
 }

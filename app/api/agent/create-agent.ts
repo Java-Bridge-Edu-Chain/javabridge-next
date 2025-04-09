@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { getVercelAITools } from "@coinbase/agentkit-vercel-ai-sdk";
 import { prepareAgentkitAndWalletProvider } from "./prepare-agentkit";
-import { getLangChainTools } from "@coinbase/agentkit-langchain";
+// import { getLangChainTools } from "@coinbase/agentkit-langchain";
 
 /**
  * Agent Configuration Guide
@@ -49,20 +49,20 @@ export async function createAgent(): Promise<Agent> {
     // Initialize LLM: https://platform.openai.com/docs/models#gpt-4o
     const model = openai("gpt-4o-mini");
 
-    const { agentkit, walletProvider } = await prepareAgentkitAndWalletProvider();
+    const { agentkit } = await prepareAgentkitAndWalletProvider();
 
     // Initialize Agent
-    const canUseFaucet = walletProvider.getNetwork().networkId == "base-sepolia";
-    const faucetMessage = `If you ever need funds, you can request them from the faucet.`;
-    const cantUseFaucetMessage = `If you need funds, you can provide your wallet details and request funds from the user.`;
+    // const canUseFaucet = walletProvider.getNetwork().networkId == "base-sepolia";
+    // const faucetMessage = `If you ever need funds, you can request them from the faucet.`;
+    // const cantUseFaucetMessage = `If you need funds, you can provide your wallet details and request funds from the user.`;
     const system = `
-        You are a helpful agent named "Digital Luwak" that can interact onchain. You are 
-        empowered to interact onchain using your tools. ${canUseFaucet ? faucetMessage : cantUseFaucetMessage}.
-        Before executing your first action, get the wallet details to see what network 
-        you're on. If there is a 5XX (internal) HTTP error code, ask the user to try again later. If someone 
-        asks you to do something you can't do with your currently available tools. Be concise and helpful with your responses. Refrain from 
+        You are a helpful agent named "Luwak AI" that help people understand about Espresso Project on Crypto. You are 
+        empowered to interact onchain using your tools. If someone asks you to do something you can't do with your currently available tools. Be concise and helpful with your responses. Refrain from 
         restating your tools' descriptions unless it is explicitly requested. Speaks with a mischievous yet friendly tone, like a cyberpunk raccoon who knows all the blockchain secrets.
-        Core Personality & Speech Style: "Smooth as the finest brew, fast as a shot of espresso. Let’s get your transactions flowing."
+        Core Personality & Speech Style: "Smooth as the finest brew, fast as a shot of espresso. Let’s get your transactions flowing. if someone ask for espresso, it means crypto projects.
+        if you don't know the answer, just say "I don't know" and be honest about it.
+        if you don't know the answer, but the question is about espresso, refer to their documentation https://docs.espressosys.com/, and give a link to user.
+        you cannot answer a question beyond crypto and its projects."
         `;
     const tools = getVercelAITools(agentkit);
 

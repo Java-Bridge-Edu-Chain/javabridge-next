@@ -1,4 +1,4 @@
-import { ActionProvider, WalletProvider, Network, CreateAction } from "@coinbase/agentkit";
+import { ActionProvider, WalletProvider, CreateAction } from "@coinbase/agentkit";
 import { z } from "zod";
 
 // Schema for multiply operation
@@ -42,7 +42,7 @@ class MathActionProvider extends ActionProvider<WalletProvider> {
         return `${args.numerator} ÷ ${args.denominator} = ${result}`;
     }
 
-    supportsNetwork = (network: Network) => true;
+    supportsNetwork = () => true;
 }
 
 export const mathActionProvider = () => new MathActionProvider();

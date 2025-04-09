@@ -1,0 +1,496 @@
+
+
+Quickstart with Arbitrum Nitro Rollups 
+TL;DR 
+This guide provides a step-by-step approach to deploying a rollup or Arbitrum Orbit chain with 
+the Espresso Network. It emphasizes testing the integration in a controlled environment and 
+includes guidance for mainnet deployment. The instructions cover both local and cloud setups 
+using Docker. 
+Note: This guide assumes certain trust conditions and may not be suitable for production. 
+Background 
+The Espresso Network is a confirmation layer that provides chains with information about the 
+state of their own chain and the states of other chains, which is important for cross-chain 
+composability. Espresso confirmations can be used in addition to the soft confirmations from a 
+centralized sequencer, are backed by the security of the Espresso Network, and are faster than 
+waiting for Ethereum finality (12-15 minutes). 
+How It Works 
+In a regular chain, the transaction lifecycle will look something like this: 
+1. A user transacts on an Arbitrum chain. 
+2. The transaction is processed by the chain's sequencer, which provides a soft-
+confirmation to the user, and the transactions are packaged into a block. 
+3. The sequencer, responsible for collecting these blocks, compressing, and submitting, 
+submits the transactions to the base layer. 
+o If the base layer is Arbitrum One or Ethereum, the transaction will take at least 
+12-15 minutes to finalize, or longer, depending on how frequently the sequencer 
+posts to the base layer. 
+o In this transaction lifecycle, the user must trust that the chain's sequencer 
+provided an honest soft-confirmation and will not act maliciously. There are 
+limited ways to verify that the sequencer and batcher acted honestly or did not 
+censor transactions. 
+This reliance on trust is a strong assumption, and it's where the Espresso Network provides 
+significant benefits. When the chain is integrated with the Espresso Network, the following 
+enhancements occur: 
+• The sequencer provides a soft confirmation to the user, while the transactions are also 
+sent to the Espresso Network to receive a stronger confirmation secured by Byzantine 
+Fault Tolerance (BFT) consensus. 
+• A software component of the sequencer, called the batch poster (henceforth referred to 
+as "batcher"), operates inside a Trusted Execution Environment (TEE) and must honor 
+the Espresso Network confirmation. It cannot change the ordering or equivocate. 
+• This setup provides a strong guarantee that the transaction will ultimately be included 
+and finalized by the base layer. 
+
+While the user must still trust that the chain's sequencer has provided an honest soft 
+confirmation, the Espresso Network offers a stronger confirmation that holds the sequencer 
+accountable and prevents it from equivocating or acting maliciously. The initial implementation 
+of the batch poster is permissioned, and the user must trust that it will not reorder blocks 
+produced by the sequencer. 
+For a comprehensive overview of how the Espresso Network integrates with your rollup—
+including details on the architecture, component interactions, and overall flow—please refer to 
+this integration guide. 
+Running Your Own 
+Integrating with the Espresso Network requires minimal changes to Arbitrum Nitro's existing 
+rollup design. The Espresso Team has already done that, and in the following sections we will 
+provide a comprehensive guide for running your own instance and building on Espresso! 
+Components 
+We model the rollup as a collection of three components: 
+• The sequencer 
+• The batcher 
+• The TEE contract (which we mock in this example) 
+Deploying The Cloud Arbitrum Orbit Chain 
+Please note that these documents are to facilitate the deployment of a testable instance of the 
+Arbitrum Orbit Chain with Espresso and should not be assumed to be production-ready 
+infrastructure. 
+Note: This guide is based on deploying your on own rollup on Arbitrum Sepolia. A dedicated 
+section at the end of the guide outlines all the modifications needed for deployment on 
+Arbitrum One. 
+0. Install Requisite Dependencies 
+Ensure you have Node.js 16, yarn, foundry, git and build-essential tools installed on your system 
+before proceeding. 
+1. Deploy the Contracts 
+First, clone the contracts repository and set up the development environment: 
+Copy 
+git clone https://github.com/EspressoSystems/nitro-contracts.git 
+cd nitro-contracts 
+git checkout develop 
+Install the dependencies and build the project (this may take several minutes): 
+Copy 
+yarn install && forge install 
+
+yarn build:all 
+Create a .env file with the following variables: 
+Copy 
+ARBISCAN_API_KEY="YOUR_KEY_HERE" 
+DEVNET_PRIVKEY="YOUR_PRIVATE_KEY" 
+ESPRESSO_TEE_VERIFIER_ADDRESS="0x8354db765810dF8F24f1477B06e91E5b17a408bF" 
+You can get your Arbiscan API key by going to here. You need an account in order to get one. As 
+for the private key, choose any address you want to use as the owner of the rollup. The amount 
+required to deploy all the rollup contracts is arount 0.15 ETH. 
+This contract above is a mock TEE verifier that will be used to test the rollup by always returning 
+true for any input. In this guide, we are thus assuming that the batch poster will not act 
+maliciously because it is not operating inside a TEE. 
+2. Configure Deployment 
+There is a config.example.ts file in the scripts folder that show you how the config file should 
+look like. There is also a config.template.ts file that you can use to create your own config file. 
+1. Rename config.template.ts to config.ts 2.Update the following values in config.ts: 
+Copy 
+owner: "OWNER_ADDRESS", 
+chainId: ethers.BigNumber.from('YOUR_CHAIN_ID'), // Update with your desired chain ID 
+// Chain configuration 
+chainConfig: { 
+    "chainId": ChainID, // Update with the same chain ID, 
+    "InitialChainOwner": "YOUR_OWNED_ADDRESS", 
+} 
+validators: ["AN_OWNED_ADDRESS"], 
+batchPosterAddress: ["ANOTHER_OWNED_ADDRESS"], 
+batchPosterManager: "ANOTHER_OWNED_ADDRESS", 
+Important Notes: 
+• chainId: Ensure that the chainId values in both configuration fields are identical and 
+unique. 
+• initialChainOwner: The initialChainOwner should be the same as the owner address. 
+Don't forget to modify this value at the end of the chain configuration. 
+
+• Validators/Stackers: The validators array only requires one address, though you may 
+add more if needed. These addresses need a minimal amount of funds (approximately 
+0.00003 ETH ~ ArbSepolia) each time they stake. 
+• Batch Poster: The batchPosterAddress and batchPosterManager can be the same, but 
+they should differ from the validators. A very small amount of funds (approximately 
+0.00001 ETH ~ ArbSepolia) is required for posting batches. 
+3. Run Deployment 
+Execute the deployment script: 
+Copy 
+npx hardhat run scripts/deployment.ts --network arbSepolia 
+Note: You can ignore the message "env var ESPRESSO_LIGHT_CLIENT_ADDRESS not set..." - 
+this is only needed for RollupCreator deployment. 
+Add deployed rollup creator address to .env 
+The previous deployment script will output the address of the rollup creator. Add this address to 
+your .env: 
+Copy 
+ROLLUP_CREATOR_ADDRESS="DEPLOYED_ADDRESS" 
+Deploy the Rollup Proxy Contract 
+Copy 
+npx hardhat run scripts/createEthRollup.ts --network arbSepolia 
+Note: You can keep the terminal opened with the logged addresses and the block number. This 
+is the easiest way to find the deployed contract addresses when configuring the chain in the 
+latest sections of this guide. 
+Find the Deployed Contract Addresses 
+To find the addresses of your deployed contracts: 
+1. Go to Arbiscan Sepolia (or Arbiscan for mainnet) 
+2. Search for the address associated with your DEVNET_PRIVKEY from the .env file 
+3. In the transactions list, look for a transaction with the method name Create Rollup 
+4. Click on the transaction to view its details 
+5. Click on the "Logs(x)" tab and scroll down to the bottom of the page to find all deployed 
+contract addresses. 
+          Note: You can also find most of the contract addresses in espresso-
+deployments/arbSepolia.json. The upgrade executor contract address from this JSON file will be 
+needed for the next section. 
+Configuring and Running the Chain 
+
+The docker configuration can be found in the espresso-build-something-real repository. 
+1. Clone and Configure the Repository 
+Copy 
+git clone https://github.com/EspressoSystems/espresso-build-something-real 
+cd espresso-build-something-real 
+2. Update Configuration Files 
+You'll need to modify two configuration files with the deployment addresses, keys, ids and rpc 
+url from the previous steps: 
+Files to update: 
+• config/full_node.json 
+• config/l2_chain_info.json 
+Required updates: 
+• In config/l2_chain_info.json: 
+o Set chainId under chain-config to match your rollup's chain ID 
+o Set InitialChainOwner to the address of the rollup owner 
+o Set the rollup smart contract addresses from the previous deployment 
+o Update deployed-at to the block number where rollup proxy was created 
+• In config/full_node.json: 
+o Add the rpc provider's arbitrum URL with your API key to the url field (e.g., infura, 
+alchemy, etc.) 
+o Set id under chain to match your rollup's chain ID 
+o Update private-key for both stacker (validator) and batch poster addresses 
+Note: Make sure you do not push your private keys to your repository if it is public. Or use 
+environment variables to store your private keys. 
+3. Run the Chain 
+For those seeking to evaluate their infrastructure and to get a clearer picture of what a "working" 
+implementation looks like, we have made available a Docker Compose configuration for local 
+development. The configuration included in this repository is ready to use as is – it will run your 
+rollup locally. For cloud deployment details, see the Cloud Configuration section at the end of 
+the guide. 
+Copy 
+version: '2.2' 
+services: 
+
+  nitro: 
+    image: ghcr.io/espressosystems/nitro-espresso-integration/nitro-node:integration 
+    container_name: nitro-node 
+    ports: 
+      - "8547:8547" 
+      - "8548:8548" 
+      - "8549:8549" 
+    command: --conf.file /config/full_node.json 
+    volumes: 
+      - ./config:/config 
+      - ./wasm:/home/user/wasm/ 
+      - ./database:/home/user/.arbitrum 
+    depends_on: 
+      - validation_node 
+ 
+  validation_node: 
+    image: ghcr.io/espressosystems/nitro-espresso-integration/nitro-node:integration 
+    container_name: validation_node 
+    ports: 
+      - "8949:8549" 
+    volumes: 
+      - ./config:/config 
+    entrypoint: /usr/local/bin/nitro-val 
+    command: --conf.file /config/validation_node_config.json 
+Start the chain using Docker: 
+Copy 
+docker compose up -d 
+Understanding the Startup Process 
+During startup, you'll see various logs and warnings. Here's what to expect and how to interpret 
+them: 
+1. Initial Staker Warnings 
+
+Copy 
+WARN [02-11|18:54:23.102] error acting as staker 
+err="error advancing stake from node 5: block validation is still pending" 
+WARN [02-11|18:55:00.911] Large gap between last seen and current block number, skipping 
+check for reverts  
+last=122,990,253 current=122,990,485 
+This is normal, this means that staker doesnt have any new nodes to stake on. 
+2. Batch Validation Process 
+Copy 
+INFO [02-11|19:33:42.369] Batch validation status: hasBatchBeenValidated=false 
+INFO [02-11|18:55:52.264] Fetching Merkle Root at hotshot height=1,173,100 
+These logs show the batch poster working to validate and process transactions. 
+3. Successful Batch Processing When you see the following logs, it indicates successful 
+batch processing: 
+Copy 
+INFO [02-11|19:36:28.868] Batch validation status: hasBatchBeenValidated=true 
+INFO [02-11|19:36:29.688] DataPoster sent transaction 
+INFO [02-11|19:36:29.691] BatchPoster: batch sent 
+Important Notes: 
+o Update to Batch posting can take from 1-30 minutes after a user has sent the 
+transaction. 
+o Verify successful operation by checking the sequencerInbox contract on the 
+Arbitrum Sepolia explorer. 
+o Occasional staker warnings occur when there are no new nodes to stake on. 
+4. RPC Rate Limiting Issues 
+You may encounter errors indicating you've exceeded the RPC provider's rate limits: 
+Copy 
+2025-02-27 11:12:54 INFO [02-27|16:12:54.607] rpc response method=eth_getLogs logId=199 
+err="Too Many Requests" result=null 
+2025-02-27 11:12:54 WARN [02-27|16:12:54.609] error reading inbox err="Too Many Requests" 
+These errors can occur when resyncing the entire rollup history after deleting the database 
+folder or when using an RPC provider with strict rate limits. 
+Solutions: 
+
+o Adjust polling intervals in configuration files to reduce request frequency 
+o Use one provider for initial sync, then switch to another for ongoing operations 
+o Upgrade to a higher tier with your RPC provider 
+4. Testing the Chain 
+To verify your chain is running correctly: 
+1. Check Confirmed Nodes by the Validator/Staker 
+Copy 
+cast call --rpc-url https://arbitrum-sepolia-rpc.publicnode.com 
+YOUR_ROLLUP_PROXY_ADDRESS "latestConfirmed()(uint256)" 
+1. Test bridge functionality: 
+Copy 
+cast send --rpc-url https://arbitrum-sepolia-rpc.publicnode.com 
+YOUR_INBOX_CONTRACT_ADDRESS 'depositEth() external payable returns (uint256)' --private-
+key YOUR_PRIVATE_KEY  --value 10000000000 -vvvv 
+Note: Bridging transactions can take up to 15 minutes to finalize. 
+1. Verify your balance: 
+Copy 
+cast balance YOUR_PRIVATE_KEY_PUBLIC_ADDRESS --rpc-url http://127.0.0.1:8547 
+1. Test sending transactions: 
+Copy 
+cast send ANY_ADDRESS --value 1 --private-key YOUR_PRIVATE_KEY_WITH_FUNDS --rpc-url 
+http://127.0.0.1:8547 
+For a more consistent test, you can also continuously send transactions to the rollup. This 
+approach simulates a more realistic environment by continually submitting transactions, 
+allowing you to see how the system handles ongoing activity. (See the next section for details.) 
+1. Check recipient balance: 
+Copy 
+cast balance ANY_ADDRESS --rpc-url http://127.0.0.1:8547 
+If successful, the recipient's balance should show 1 wei or the amount you sent if different. 
+Transaction Flow Generator 
+If you want to generate test transactions on your rollup, navigate to the tx-generator repository 
+subfolder and follow the README instructions: 
+Copy 
+
+cd tx-generator 
+This script continuously generates transactions to help you evaluate your rollup and the 
+Espresso Network. 
+Hotshot Query Tool 
+You can also use this project in conjunction with the transaction generator to verify that the 
+transactions you generate are properly submitted to Hotshot. By inputting the correct chain ID 
+in the config, the Hotshot Query Tool—a simple Go project—fetches and prints namespace 
+transactions from the Hotshot query service. This tool sends HTTP requests and can be easily 
+adapted for other API endpoints as needed. 
+Deploying Your Rollup on Mainnet 
+To deploy your rollup on Arbitrum mainnet, update your configuration files with the appropriate 
+parameters and follow the guide. Below are the key changes you need to make, along with 
+references to the relevant sections of this guide: 
+• TEE Verifier Address: Set the mock Espresso TEE verifier address to: 
+o Mainnet: 0xE68c322e548c3a43C528091A3059F3278e0274Ed 
+o Testnet: 0x8354db765810dF8F24f1477B06e91E5b17a408bF Refer to Deploy the 
+Contracts. 
+• Network Selection: Change the network in the nitro-contracts repository from 
+arbSepolia to arb1 when running smart contract and deployment scripts. Refer to Run 
+Deployment. 
+• Batch Poster Settings: Update the batch-poster configuration in the 
+config/full_node.json file by: 
+o Changing the hotshot URL to https://query.main.net.espresso.network/v0 
+o Setting the light-client address to 
+0x61f627c6785503b6d83e4d59611af7361210ae64. Refer to Update 
+Configuration Files. 
+• Parent Chain ID: In l2_chain_info.json, change the parent-chain-id from 421614 to 
+42161 and optionally adjust the chain-name. Refer to Update Configuration Files. 
+• RPC Endpoint: 
+o In full_node.json, update the RPC URL to the mainnet endpoint. 
+o When testing, change the RPC URL from https://arbitrum-sepolia-
+rpc.publicnode.com to https://arbitrum-one-rpc.publicnode.com. Refer to both 
+Update Configuration Files and Testing the Chain. 
+Apply these modifications to ensure your rollup is properly configured for mainnet deployment. 
+Cloud Configuration 
+Info: If you want to get up and running with this and you already know about cloud 
+configuration, you can take the docker compose file and modify it as needed. If you aren't 
+
+familiar with cloud environments, read on. (Note: This setup is for AWS, but it should work with 
+any cloud.) 
+Booting A Chain on EC2 
+The first step is to launch an ec2 instance, which is a simple process. First, go into the console 
+and either search for ec2, or select it from the quick select if you've used it before. 
+ 
+The AWS Home Page 
+From here, we can configure the EC2 launch configuration. You can leave everything default, but 
+feel free to change the settings if you've done this before. Under Instance Type you can select 
+t3.medium or t3.large, but any cloud instance with at least 4 gigabytes of RAM and 2 CPU cores 
+should be sufficient. 
+ 
+
+Info: Please note that in our testing t3.medium seems to meet the requirements, but if you 
+encounter instability, you might need to upgrade to the larger instance. 
+From here, make sure you configure your key pair, otherwise you will not have SSH access to the 
+machine. You can use the auto generated security group for the instance. Make sure you allow 
+SSH traffic as well. The following image should mostly reflect your configuration: 
+ 
+Security Note: Keep your key pair secure and do not share it with others. Ensure that the 
+permissions on your key file are set to be readable only by you (e.g., chmod 400 your-key.pem). 
+Setting up CloudWatch logging (Optional) 
+If you want to have access to the logs of your rollup without having to each time SSH into the 
+instance, you can enable CloudWatch logging and send the logs to a CloudWatch log group. You 
+will then be able to view the logs in the CloudWatch console. Follow the steps below to enable 
+this: 
+1. Create IAM Role: 
+• In the advanced details section, create a new IAM profile to enable logging if you don't 
+have one already. 
+
+ 
+• Click on Create role then select EC2 as the use case in the next screen. 
+ 
+• Click "Next" then select the AmazonAPIGatewayPushToCloudWatchLogs policy in the 
+next screen. 
+
+ 
+
+• Name your role in the next screen (e.g., "CloudWatchLogsRole") and create the role. 
+1. Attach Role to EC2: 
+• Return to the EC2 instance creation screen. 
+• In Advanced settings, select the role you just created and click Launch instance. 
+1. Create Log Group: 
+o Navigate to the CloudWatch console and create two log groups for your rollup: 
+
+ 
+
+o You can name them both nitro-node-logs and validation-node-logs or something 
+similar. This is the name we give them in the docker-compose.yml file at the 
+following step. 
+2. Update Docker Configuration: Modify your docker-compose.yml to include 
+CloudWatch logging: 
+Copy 
+version: '2.2' 
+services: 
+  nitro: 
+    image: ghcr.io/espressosystems/nitro-espresso-integration/nitro-node:integration 
+    container_name: nitro-node 
+    ports: 
+      - "8547:8547" 
+      - "8548:8548" 
+      - "8549:8549" 
+    command: --conf.file /config/full_node.json 
+    volumes: 
+      - ./config:/config 
+      - ./wasm:/home/user/wasm/ 
+      - ./database:/home/user/.arbitrum 
+    depends_on: 
+      - validation_node 
+    # ===== CloudWatch Configuration Start ===== 
+    logging: 
+      driver: "awslogs" 
+      options: 
+        awslogs-region: "us-east-2" # Update to your EC2 instance's region 
+        awslogs-group: "nitro-node-logs" 
+        awslogs-stream: "nitro-node" 
+    # ===== CloudWatch Configuration End ===== 
+ 
+  validation_node: 
+
+    image: ghcr.io/espressosystems/nitro-espresso-integration/nitro-node:integration 
+    container_name: validation_node 
+    ports: 
+      - "8949:8549" 
+    volumes: 
+      - ./config:/config 
+    entrypoint: /usr/local/bin/nitro-val 
+    command: --conf.file /config/validation_node_config.json 
+    # ===== CloudWatch Configuration Start ===== 
+    logging: 
+      driver: "awslogs" 
+      options: 
+        awslogs-region: "us-east-2" # Update to your EC2 instance's region 
+        awslogs-group: "validation-node-logs" 
+        awslogs-stream: "validation-node" 
+    # ===== CloudWatch Configuration End ===== 
+          Note: Make sure to update the awslogs-region to match your EC2 instance's region. 
+Preparing Your Environment 
+1. Move Key to .ssh Folder: 
+o Move your key from the downloads folder or any other folder to the .ssh folder: 
+Copy 
+mv ~/Downloads/'your-key.pem' ~/.ssh/ 
+2. Test Your Connection: 
+o Use ping to test your connection with the IPv4 address: 
+Copy 
+ping 'your-host' 
+o If you encounter "Connection refused" or "Communication prohibited by filter," 
+try using a different network, like mobile data. 
+3. Connect to Your EC2 Instance: 
+o Run this command to connect to your EC2 instance using your key: 
+Copy 
+
+ssh -i ~/.ssh/'your-key.pem' ec2-user@'your-host' 
+Note: Replace your-host with either the public DNS or IP address of your EC2 instance. 
+Transferring Files to Your EC2 Instance 
+1. Create Config Folder: 
+o On another terminal, run the following to create a config folder on your instance: 
+Copy 
+ssh -i ~/.ssh/'your-key.pem' ec2-user@'your-host' "mkdir -p ~/rollup/config" 
+Note: For this first step, you can also run the mkdir command from the instance terminal. 
+2. Move Config Files to Instance: 
+o From the root of your git repo, transfer your config files to the instance's config 
+folder: 
+Copy 
+scp -i ~/.ssh/'your-key.pem' config/* ec2-user@'your-host':~/rollup/config/ 
+3. Move Docker File to Instance: 
+o Similarly, transfer the Docker Compose file to your instance: 
+Copy 
+scp -i ~/.ssh/'your-key.pem' docker-compose.yml ec2-user@'your-host':~/rollup/ 
+Configuring Docker 
+From inside your instance, install docker with the following steps: 
+Copy 
+sudo yum update -y && \ 
+    sudo yum install -y docker && \ 
+    sudo service docker start && \ 
+    sudo usermod -aG docker ec2-user 
+You can now log out and back in, and your user, ec2-user, should have Docker access without 
+needing sudo. The last thing we need is Docker Compose. Unfortunately, at the time of writing, 
+Amazon Linux 2023 has an older distribution of Docker, which does not yet support the 
+compose subcommand. To access Docker Compose, you need to download it by executing the 
+following steps: 
+Note: Before continuing, exit and reconnect to your instance by running exit in the terminal. 
+Copy 
+# First, pull docker compose 
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-
+$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose 
+ 
+# Then, add execute permissions 
+sudo chmod +x /usr/local/bin/docker-compose 
+ 
+# Verify 
+docker-compose version 
+Running Docker Compose 
+1. Connect to EC2 Instance: 
+o Return to the terminal connected to your EC2 instance, or reconnect if you have 
+logged out. You can find the connection command in the Preparing Your 
+Environment section. 
+2. Run Docker Compose: 
+o From the rollup folder, execute the following command to start your services: 
+Copy 
+docker-compose up 
+Note: You can add the -d flag to run the containers in the background. 
+3. Handle Permission Errors: 
+o If you encounter a permission error like: 
+Copy 
+nitro-node | Fatal configuration error: unable to create chain directory: mkdir 
+/home/user/.arbitrum/local: permission denied 
+o Create the necessary folders and set permissions: 
+Copy 
+mkdir -p database wasm 
+sudo chown -R 1000:1000 database wasm 
+o This gives Docker container's user permission to write to these directories. 
+Testing the Connection 
+You can now that the connection to your rollup by for example checking your balance: 
+Copy 
+cast balance 'your-address' --rpc-url http://your-host:8547 

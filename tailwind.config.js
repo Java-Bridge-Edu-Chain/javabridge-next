@@ -1,12 +1,18 @@
-import type { Config } from "tailwindcss"
-
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './app/**/*.{js,jsx,ts,tsx}',
+    './lib/**/*.{js,jsx,ts,tsx}',
+    './pages/**/*.{js,jsx,ts,tsx}',
+    './components/**/*.{js,jsx,ts,tsx}',
+    './src/**/*.{js,jsx,ts,tsx}',
+    './app/chat/**/*.{js,jsx,ts,tsx}',
+    './app/chat/components/**/*.{js,jsx,ts,tsx}',
+  ],
+  safelist: [
+    "from-[#F08A24]", "to-[#E67E22]", "hover:from-[#E67E22]", "hover:to-[#D35400]",
+    "from-[#F08A24]/50", "to-[#E67E22]/50", "from-[#F08A24]", "to-[#E67E22]",
+    "from-[#D9BEA7]", "to-[#CAAF9B]", "md:hidden",
   ],
   prefix: "",
   theme: {
@@ -54,17 +60,16 @@ const config = {
         },
         // Add JavaBridge brown theme colors
         java: {
-          50: "#fff8eb",
-          100: "#fcebc8",
-          200: "#f8d799",
-          300: "#f3bd62",
-          400: "#eda339",
-          500: "#e58a1d",
-          600: "#d16e14",
-          700: "#a24f12",
-          800: "#844116",
-          900: "#6e3716",
-          950: "#3f1d0c",
+          "50": "#f5f0ec",
+          "100": "#ebe0d9",
+          "200": "#d7c2b3",
+          "300": "#c3a38e",
+          "400": "#af8568",
+          "500": "#9b6642",
+          "600": "#7c5235",
+          "700": "#5d3d28",
+          "800": "#3e291a",
+          "900": "#1f140d"
         },
       },
       borderRadius: {
@@ -89,18 +94,31 @@ const config = {
         "pulse-gentle": {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.8" }
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "25%": { transform: "translateY(-15px) translateX(15px)" },
+          "50%": { transform: "translateY(-25px) translateX(-10px)" },
+          "75%": { transform: "translateY(-10px) translateX(15px)" },
+        },
+        gradientShift: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "steam": "steam 2s ease-out infinite",
-        "pulse-gentle": "pulse-gentle 3s ease-in-out infinite"
+        "pulse-gentle": "pulse-gentle 3s ease-in-out infinite",
+        "float": "float 15s ease-in-out infinite",
+        "spin-slow": "spin 8s linear infinite",
+        "gradient": "gradientShift 8s ease infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+}
 
 export default config
 

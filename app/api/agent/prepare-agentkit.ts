@@ -1,18 +1,20 @@
+import { bridgeActionProvider } from "@/lib/action-providers/bridge";
 import { mathActionProvider } from "@/lib/action-providers/math";
+import { ragActionProvider } from "@/lib/action-providers/rag";
 import {
   ActionProvider,
   AgentKit,
   cdpApiActionProvider,
-  erc20ActionProvider,
   NETWORK_ID_TO_VIEM_CHAIN,
   pythActionProvider,
   ViemWalletProvider,
-  walletActionProvider,
   WalletProvider,
-  wethActionProvider,
+  // walletActionProvider,
+  // erc20ActionProvider,
+  // wethActionProvider,
 } from "@coinbase/agentkit";
 import fs from "fs";
-import { createWalletClient, Hex, http } from "viem";
+import { Chain, createWalletClient, Hex, http } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 /**
@@ -81,21 +83,28 @@ export async function prepareAgentkitAndWalletProvider(): Promise<{
 
     const account = privateKeyToAccount(privateKey);
     const networkId = process.env.NETWORK_ID as string;
+    const chain = NETWORK_ID_TO_VIEM_CHAIN[networkId] as Chain;
 
     const client = createWalletClient({
       account,
-      chain: NETWORK_ID_TO_VIEM_CHAIN[networkId],
+      chain,
       transport: http(),
     });
-    const walletProvider = new ViemWalletProvider(client);
+    
+    // Fix type error by directly passing the client with a type assertion
+    // This ensures compatibility with the ViemWalletProvider constructor
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const walletProvider = new ViemWalletProvider(client as any);
 
     // Initialize AgentKit: https://docs.cdp.coinbase.com/agentkit/docs/agent-actions
     const actionProviders: ActionProvider[] = [
-      wethActionProvider(),
+      // wethActionProvider(),
       pythActionProvider(),
-      walletActionProvider(),
-      erc20ActionProvider(),
+      // walletActionProvider(),
+      // erc20ActionProvider(),
       mathActionProvider(),
+      ragActionProvider(),
+      bridgeActionProvider(),
     ];
     const canUseCdpApi = process.env.CDP_API_KEY_NAME && process.env.CDP_API_KEY_PRIVATE_KEY;
     if (canUseCdpApi) {

@@ -66,7 +66,7 @@ export default function Home() {
           <div className="relative inline-flex items-center gap-3 p-2 px-6 rounded-full bg-gradient-to-r from-java-500 to-java-600 border border-java-700/30 text-java-50 mb-6 shadow-lg shadow-java-500/20 transform hover:scale-105 transition-transform">
             <Sparkles className="w-5 h-5 animate-pulse" color="white" />
             <span className="text-sm font-medium text-white">
-              The Ultimate Bridge Assistant ☕
+            Your On-Chain AI for EduChain & Beyond ☕
             </span>
             <Stars className="w-4 h-4 text-java-100 animate-spin-slow" />
           </div>
@@ -81,7 +81,7 @@ export default function Home() {
           </h1>
           
           <p className="text-java-700 max-w-xl mx-auto text-lg mb-6 leading-relaxed">
-          <strong>Luwak AI</strong> makes bridging on <strong>Java Bridge</strong> seamless, secure, and lightning-fast—your 24/7 on-chain expert
+          <strong>Luwak AI</strong> is your <strong>intelligent crypto assistant—purpose-built for EduChain</strong>. Ask anything. Learn fast. Bridge smarter.
           </p>
           
           {/* <div className="hidden md:flex justify-center gap-5 mb-4">
@@ -124,7 +124,7 @@ export default function Home() {
                   <h2 className="font-bold text-xl text-white tracking-tight">Luwak AI</h2>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <p className="text-sm text-java-200/80">Solving cross-chain chaos with precision.</p>
+                    <p className="text-sm text-java-200/80">Empowering Web3 with clarity, speed, and on-chain precision.</p>
                   </div>
                 </div>
               </div>

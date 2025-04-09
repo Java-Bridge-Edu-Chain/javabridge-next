@@ -46,9 +46,10 @@ class RagActionProvider extends ActionProvider<WalletProvider> {
 
     @CreateAction({
         name: "rag-search",
-        description: `Search for relevant documents based on a query. if user ask for crypto project like espresso, espresso network, espresso node, espresso testnet,
-        arbitrum orbit chain,TEE, Bridging Espresso, Espresso Builder APi, Espresso API,
-        caffeinated node, mainnet 0, testnets, ZK Rollup, Optimistic Rollup, HotShot, EspressoDA, data availability, espresso builder,
+        description: `Search for relevant documents based on a query. if user ask for crypto project like Edu Chain, Open Campus,
+        Arbitrum Orbit, Codex RPC Node, Open Campus ID, Faucet, Smart Contract, Gelato, Zero Dev, Layer Zero, Oracle, DIA, Relay,
+        Wallet, Wallet as a Service, Privy, Web3Auth, SailFish, MoveFlow, Blend, Camelot, GainzSwap, ThrustPad, EduScan, Grasp Academy, EduHub, EduGPT, Daily Wiser, TinyTap, Pody Network, Proof of Learn
+
          execute this function first.`,
         schema: RagSearchSchema,
     })

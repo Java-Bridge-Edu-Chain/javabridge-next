@@ -20,7 +20,7 @@ export default function Home() {
           <div className="relative inline-flex items-center gap-3 p-2 px-6 rounded-full bg-gradient-to-r from-java-500 to-java-600 border border-java-700/30 text-java-50 mb-6 shadow-lg shadow-java-500/20 transform hover:scale-105 transition-transform">
             <Sparkles className="w-5 h-5 animate-pulse" color="white" />
             <span className="text-sm font-medium text-white">
-              The Fast Lane to Rollups with Espresso ☕
+            The Fast Lane to Blockchain Transfers ☕
             </span>
           </div>
 
@@ -34,7 +34,8 @@ export default function Home() {
           </h1>
 
           <p className="text-java-700 max-w-xl mx-auto text-lg text-center mb-6 leading-relaxed">
-            Delivers <strong>blazing-fast</strong> transfers from chains to rollups using <strong>Espresso</strong>, a next-gen hybrid Zero-Knowledge & Optimistic Rollup.
+          Delivering <strong>high-speed asset transfers across chains</strong> with seamless interoperability and minimal latency.
+          Fast. Secure. Reliable.
           </p>
         </div>
 
